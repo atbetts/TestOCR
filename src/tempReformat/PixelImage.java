@@ -50,7 +50,7 @@ public class PixelImage {
         if(val>255){
             val = 255;
         }
-        myPixels.setValue(x,y, val);
+        myPixels.setValue(x, y, val);
     }
 
     private void setMyPixels(){
@@ -108,5 +108,55 @@ public class PixelImage {
 
     }
 
+
+    public  BufferedImage greyScale(){
+
+        final Matrix copyPixels = new Matrix(this.myPixels);
+        final int rows = copyPixels.getRows();
+        for (int i = 0; i < rows; i++) {
+            final int cols = copyPixels.getCols();
+            Matrix m = new Matrix(3,3);
+            for (int j = 0; j < cols; j++) {
+                // Get neighboring pixels
+                for (int k = i-1; k <= i+1 ; k++) {
+                    for (int l = j-1; l <= j+1; l++) {
+                        //Wrap Edges
+                        if(l<0){
+                            l = rows +l;
+                        }else if(l> rows){
+                            l = l- rows;
+                        }
+                        if(j<0){
+                            j = cols +l;
+                        }else if(j> cols){
+                            j = j- cols;
+                        }
+
+                        m.setValue(k, l, copyPixels.getValue(k, l));
+
+                    }
+                }
+                int r,b,g,count;
+                r=b=g=count=0;
+                for (int k = 0; k < 3; k++) {
+                    for (int l = 0; l < 3; l++) {
+                        int color = (int)m.getValue(k,l);
+                        r+= color & 0xFF;
+                        g+= color >> 8 & 0xFF;
+                        b+= color >> 16 & 0xFF;
+                        count++;
+                    }
+                }
+                r = r/count;
+                b = b/count;
+                g = g/count;
+
+                int average = (0xFF<<24)+(b<<16)+(g<<8)+(r);
+                copyPixels.setValue(i, j, average);
+            }
+        }
+
+        return buildPixels(copyPixels);
+    }
 
 }

@@ -13,7 +13,12 @@ public class Matrix {
         this.matrix = matrix;
         rows = matrix.length;
         cols = matrix[0].length;
+    }
 
+    public Matrix(Matrix m){
+        matrix = m.getMatrix();
+        rows = m.getRows();
+        cols = m.getCols();
     }
 
     public Matrix(int rows, int cols){
