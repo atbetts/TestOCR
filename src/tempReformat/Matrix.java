@@ -20,6 +20,12 @@ public class Matrix {
     }
 
 
+    public double convolve(Matrix m){
+
+        return 4;
+
+    }
+
     public Matrix(int[][]matrix){
         final int row = matrix.length;
         final int col = matrix[0].length;
@@ -54,7 +60,6 @@ public class Matrix {
         for (int i = 0; i < rows; i++) {
             for (int j = 0; j < cols; j++) {
                 cast[i][j] = (int)matrix[i][j];
-                System.out.println(i+","+j);
             }
         }
 
@@ -89,5 +94,16 @@ public class Matrix {
         return new Matrix(product);
     }
 
+    public String toString(){
+        StringBuilder s = new StringBuilder();
+
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+               s.append(matrix[i][j] + "\t");
+            }
+            s.append("\n");
+        }
+        return s.toString();
+    }
 
 }

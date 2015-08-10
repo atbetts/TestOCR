@@ -43,6 +43,16 @@ public class PixelImage {
         return new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB){{setData(raster);}};
     }
 
+    public void setPixel(int x, int y,int val){
+        if(val<0){
+            val = 0;
+        }
+        if(val>255){
+            val = 255;
+        }
+        myPixels.setValue(x,y, val);
+    }
+
     private void setMyPixels(){
         byte[] rgb =  ((DataBufferByte)myImage.getRaster().getDataBuffer()).getData();
 
