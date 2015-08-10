@@ -43,6 +43,18 @@ public class Matrix {
         matrix = new double[rows][cols];
     }
 
+    public Matrix(double d,int rows, int cols){
+        this.rows = rows;this.cols = cols;
+        matrix = new double[rows][cols];
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                matrix[i][j]=d;
+            }
+        }
+    }
+
+
     public Dimension getBounds(){
         return new Dimension(rows,cols);
     }
