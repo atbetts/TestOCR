@@ -55,6 +55,19 @@ public class Matrix {
     }
 
 
+    public Matrix(int[][] matrix) {
+        final int row = matrix.length;
+        final int col = matrix[0].length;
+        this.matrix = new double[row][col];
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                this.matrix[i][j] = matrix[i][j];
+            }
+        }
+        rows = row;
+        cols = col;
+    }
+
     public Dimension getBounds(){
         return new Dimension(rows,cols);
     }
@@ -68,7 +81,7 @@ public class Matrix {
     }
 
     public double convolve(Matrix m){
-        if(m.getBounds()!=getBounds()){
+        if (!m.getBounds().equals(getBounds())) {
             throw new IllegalArgumentException(String.format("Bounds do not match! Match[%d][%d]",rows,cols));
         }
         double sum=0;
@@ -87,20 +100,6 @@ public class Matrix {
     }
 
     public double getValue(int x, int y){if(x<0||x>=rows||y<0||y>=cols)throw new IllegalArgumentException(String.format("Out of bounds [%d][%d] not in range [%d][%d]",x,y,rows,cols)); return matrix[x][y];}
-
-
-    public Matrix(int[][]matrix){
-        final int row = matrix.length;
-        final int col = matrix[0].length;
-        this.matrix = new double[row][col];
-        for (int i = 0; i <row ; i++) {
-            for (int j = 0; j < col; j++) {
-                this.matrix[i][j] = matrix[i][j];
-            }
-        }
-        rows = row;
-        cols = col;
-    }
 
     public Matrix multiply(double a){
         double[][] m = matrix;
