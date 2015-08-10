@@ -1,5 +1,7 @@
 package tempReformat;
 
+import java.awt.*;
+
 /**
  * Created by abetts on 8/10/15.
  */
@@ -19,12 +21,39 @@ public class Matrix {
         matrix = new double[rows][cols];
     }
 
+    public Dimension getBounds(){
+        return new Dimension(rows,cols);
+    }
+
+    public int getRows(){
+        return rows;
+    }
+
+    public int getCols(){
+        return cols;
+    }
 
     public double convolve(Matrix m){
+        if(m.getBounds()!=getBounds()){
+            throw new IllegalArgumentException(String.format("Bounds do not match! Match[%d][%d]",rows,cols));
+        }
+        double sum=0;
+        double weight=0;
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                sum+= matrix[i][j]*m.getValue(i,j);
+                weight+=m.getValue(i,j);
+            }
+        }
+        if(weight == 0) {
+            weight = 1;
+        }
 
-        return 4;
-
+        return sum/weight;
     }
+
+    public double getValue(int x, int y){return matrix[x][y];}
+
 
     public Matrix(int[][]matrix){
         final int row = matrix.length;
@@ -100,7 +129,7 @@ public class Matrix {
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
-               s.append((int)matrix[i][j] + "\t");
+               s.append((int) matrix[i][j] + "\t");
             }
             s.append("\n");
         }
