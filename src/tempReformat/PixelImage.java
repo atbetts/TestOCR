@@ -1,5 +1,6 @@
 package tempReformat;
 
+import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 
@@ -57,6 +58,10 @@ public class PixelImage {
             }
         }
 
+    }
+
+    public void draw(Graphics g,int x ,int y){
+        g.drawImage(myImage,x,y,null);
     }
 
     public PixelImage(BufferedImage bufferedImage){
