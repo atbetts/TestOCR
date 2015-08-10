@@ -98,7 +98,7 @@ public class PixelImage {
         if(myPixels==null){
             setMyPixels();
         }
-        g.drawImage(buildPixels(myPixels), x, y, null);
+        g.drawImage(greyScale(), x, y, null);
     }
 
     public PixelImage(BufferedImage bufferedImage){
@@ -118,22 +118,28 @@ public class PixelImage {
             Matrix m = new Matrix(3,3);
             for (int j = 0; j < cols; j++) {
                 // Get neighboring pixels
+                int row,col;
+                row=col=0;
+
                 for (int k = i-1; k <= i+1 ; k++) {
                     for (int l = j-1; l <= j+1; l++) {
                         //Wrap Edges
                         if(l<0){
-                            l = rows +l;
-                        }else if(l> rows){
-                            l = l- rows;
+                            l = cols +l;
+                        }else if(l>= cols){
+                            l = l- cols;
                         }
-                        if(j<0){
-                            j = cols +l;
-                        }else if(j> cols){
-                            j = j- cols;
+                        if(k<0){
+                            k = rows +k;
+                        }else if(k>= rows){
+                            k = k- rows;
                         }
 
-                        m.setValue(k, l, copyPixels.getValue(k, l));
-
+                        m.setValue(row, col++, copyPixels.getValue(k, l));
+                        if(col>2){
+                            col=0;
+                            row++;
+                        }
                     }
                 }
                 int r,b,g,count;
