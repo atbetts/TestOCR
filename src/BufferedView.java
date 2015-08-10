@@ -16,7 +16,11 @@ public class BufferedView extends JPanel {
 
     public BufferedView(BufferedImage I){
         myImage = I;
+
+
         image = buildPixels(sobelMask(greyScale()));
+
+
         JFrame j = new JFrame("Grey"){{setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);setSize(myImage.getWidth()*2,myImage.getHeight());setVisible(true);}};
         j.add(this);
         j.repaint();
@@ -96,7 +100,7 @@ public class BufferedView extends JPanel {
                     else if(greyValue<0)
                         greyValue=0;
 
-                    greyValue = 255-greyValue;//Invert
+//                    greyValue = 255-greyValue;//Invert
 
                     pixels[x][y] = (0xFF<<24)+(greyValue<<16)+(greyValue<<8)+greyValue;
             }
@@ -105,6 +109,82 @@ public class BufferedView extends JPanel {
 
         return pixels;
     }
+
+
+
+
+    public int[][] applyFilter(int[][] filter, int [][] image){
+        int[][]pixels = image;
+        int fRow = filter.length;
+        int fCol = filter[0].length;
+        int row = pixels.length;
+        int col = pixels[0].length;
+
+        if(fRow!=fCol){
+            System.out.println("Not Square Filter Exiting");
+            System.exit(1);
+        }if(fRow%2==0){
+            System.out.println("Enter Odd Matrix");
+            System.exit(2);
+        }
+        int[][]filterGroup = new int[fRow][fCol];
+
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < col; j++) {
+                int r,c;
+                r=c=0;
+                final int offset = (fCol - 1) / 2;
+                for (int k = i - offset; k <= i + offset; k++) {
+                    for (int l = j - offset; l <= j + offset; l++) {
+
+                        int rWrap=k,cWrap=l;    //Wraps edges
+                        if(k<0){
+                            rWrap = row - k;
+                        }else if(k>=row){
+                            rWrap = k - row;
+                        }
+                        if(l<0){
+                            cWrap = col - l;
+                        }else if(l>=col){
+                            cWrap = l-col;
+                        }
+
+                        filterGroup[r][c++] = pixels[rWrap][cWrap];
+                        if(c>=fCol){
+                            c=0;
+                            r++;
+                        }
+                    }
+                }
+
+                int convolve=0;
+                int divisor = 0;
+
+                for (int k = 0; k < fCol; k++) {
+                    for (int l = 0; l < fCol; l++) {
+                        convolve+=filterGroup[k][l]*filter[k][l];
+                        divisor+= filter[k][l];
+                    }
+                }
+                int standardVal = divisor==0?convolve:convolve/divisor;
+                if(standardVal>255){
+                    standardVal = 255;
+                }else if(standardVal<0){
+                    standardVal=0;
+                }
+                standardVal = standardVal&0xFF;
+
+                pixels[i][j] = (0xFF << 24) + ( standardVal <<16) +(standardVal <<8) + standardVal;
+
+            }
+        }
+
+
+        return pixels;
+    }
+
+
+
 
 
     public int[][] greyScale(){
@@ -128,7 +208,7 @@ public class BufferedView extends JPanel {
 
 
               final int greyValue = (int) ((.21 * red) + (.07 * blue) + (.72 * green));
-
+//                final int greyValue = (int) ((1 * red) + (1 * blue) + (1 * green))/3;
 
               pixels[row][col] = (alpha << 24) + (greyValue << 16) + (greyValue << 8) +greyValue;
 
