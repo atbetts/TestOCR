@@ -10,13 +10,30 @@ public class Matrix {
     private int rows,cols;
 
     public Matrix(double [][] matrix){
-        this.matrix = matrix;
-        rows = matrix.length;
-        cols = matrix[0].length;
+        final int row = matrix.length;
+        final int col = matrix[0].length;
+        this.matrix = new double[row][col];
+        for (int i = 0; i <row ; i++) {
+            for (int j = 0; j < col; j++) {
+                this.matrix[i][j] = matrix[i][j];
+            }
+        }
+        rows = row;
+        cols = col;
     }
 
     public Matrix(Matrix m){
-        matrix = m.getMatrix();
+        double[][] matrix  = m.getMatrix();
+        final int row = matrix.length;
+        final int col = matrix[0].length;
+        this.matrix = new double[row][col];
+        for (int i = 0; i <row ; i++) {
+            for (int j = 0; j < col; j++) {
+                this.matrix[i][j] = matrix[i][j];
+            }
+        }
+        rows = row;
+        cols = col;
         rows = m.getRows();
         cols = m.getCols();
     }
@@ -57,7 +74,7 @@ public class Matrix {
         return sum/weight;
     }
 
-    public double getValue(int x, int y){return matrix[x][y];}
+    public double getValue(int x, int y){if(x<0||x>=rows||y<0||y>=cols)throw new IllegalArgumentException(String.format("Out of bounds [%d][%d] not in range [%d][%d]",x,y,rows,cols)); return matrix[x][y];}
 
 
     public Matrix(int[][]matrix){
@@ -101,7 +118,7 @@ public class Matrix {
     }
 
     public void setValue(int x, int y, double val){
-        if(x>rows||y>cols||x<0||y<0){
+        if(x>=rows||y>=cols||x<0||y<0){
             throw new IllegalArgumentException(String.format("(%d,%d) not in range of [%d,%d]",x,y,rows,cols));
         }
         matrix[x][y] = val;

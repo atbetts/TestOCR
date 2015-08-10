@@ -118,28 +118,31 @@ public class PixelImage {
             Matrix m = new Matrix(3,3);
             for (int j = 0; j < cols; j++) {
                 // Get neighboring pixels
-                int row,col;
-                row=col=0;
+
 
                 for (int k = i-1; k <= i+1 ; k++) {
+                    int row,col;
+                    row=col=0;
                     for (int l = j-1; l <= j+1; l++) {
                         //Wrap Edges
+                        int wrapC=l,wrapR=k;
                         if(l<0){
-                            l = cols +l;
+                            wrapC = cols +l;
                         }else if(l>= cols){
-                            l = l- cols;
+                            wrapC = l- cols;
                         }
                         if(k<0){
-                            k = rows +k;
+                            wrapR = rows +k;
                         }else if(k>= rows){
-                            k = k- rows;
+                            wrapR = k- rows;
                         }
 
-                        m.setValue(row, col++, copyPixels.getValue(k, l));
+                        m.setValue(row, col++, copyPixels.getValue(wrapR, wrapC));
                         if(col>2){
                             col=0;
                             row++;
                         }
+
                     }
                 }
                 int r,b,g,count;
@@ -147,9 +150,9 @@ public class PixelImage {
                 for (int k = 0; k < 3; k++) {
                     for (int l = 0; l < 3; l++) {
                         int color = (int)m.getValue(k,l);
-                        r+= color & 0xFF;
+                        b+= color & 0xFF;
                         g+= color >> 8 & 0xFF;
-                        b+= color >> 16 & 0xFF;
+                        r+= color >> 16 & 0xFF;
                         count++;
                     }
                 }
@@ -157,7 +160,9 @@ public class PixelImage {
                 b = b/count;
                 g = g/count;
 
-                int average = (0xFF<<24)+(b<<16)+(g<<8)+(r);
+                int grey = (r+b+g)/3;
+
+                int average = (0xFF<<24)+(r<<16)+(g<<8)+(b);
                 copyPixels.setValue(i, j, average);
             }
         }
