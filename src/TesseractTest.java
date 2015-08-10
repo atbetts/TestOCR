@@ -29,7 +29,6 @@ public class TesseractTest {
         jf.pack();
         jf.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         jf.setVisible(true);
-        String expResult = "The (quick) [brown] {fox} jumps!\nOver the $43,456.78 <lazy> #90 dog";
         String result = instance.doOCR(bi);
         System.out.println(result);
 

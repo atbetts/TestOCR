@@ -47,6 +47,47 @@ public class BufferedView extends JPanel {
         return new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB){{setData(raster);}};
     }
 
+
+    public int[][] sobelMask(){
+        int [] [] pixels = getPixels();
+        int[][] gX = {
+                { -1,  0,  1 },
+                { -2,  0,  2 },
+                { -1,  0,  1 }
+        };
+
+        int[][] gY = {
+                {  1,  2,  1 },
+                {  0,  0,  0 },
+                { -1, -2, -1 }
+        };
+
+        int width = pixels[0].length;
+        int height = pixels.length;
+
+        width-=1;   //Trim Borders for Filter
+        height-=1;
+
+        for (int i = 0; i < height; i++) { //Rows
+            for (int j = 0; j < width; j++) {
+                //Cols
+                int[][] localPixels = new int[3][3];
+                for (int x = Math.max(i - 1, 0); x < Math.min(height, i + 2); x++) {    //Get Surrounding Pixels 3x3
+                    for (int y = Math.max(j - 1, 0); y < Math.min(width, j + 2); y++) {
+
+
+
+                    }
+                }
+
+
+            }
+        }
+
+        return pixels;
+    }
+
+
     public int[][] greyScale(){
       int [] [] pixels = getPixels();
         final int width = pixels[0].length;
