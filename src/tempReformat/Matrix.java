@@ -83,10 +83,11 @@ public class Matrix {
 
         double [][] product = new double[cols][matrix1.length];
 
-        for (int i = 0; i < this.matrix.length; i++) {
-            for (int j = 0; j < matrix1[0].length; j++) {
+        for (int i = 0; i < this.matrix.length; i++) {  //Row of Matrix A
+            for (int j = 0; j < matrix1[0].length; j++) {  //Col of Matrix B
                 for (int k = 0; k < cols; k++) {
-                    product[i][j] = matrix[i][k]*matrix1[k][j];
+                    product[i][j] += matrix[i][k]*matrix1[k][j]; //Common Point
+
                 }
             }
         }
@@ -99,7 +100,7 @@ public class Matrix {
 
         for (int i = 0; i < matrix.length; i++) {
             for (int j = 0; j < matrix[0].length; j++) {
-               s.append(matrix[i][j] + "\t");
+               s.append((int)matrix[i][j] + "\t");
             }
             s.append("\n");
         }
