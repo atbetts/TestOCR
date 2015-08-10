@@ -50,89 +50,56 @@ public class BufferedView extends JPanel {
 
     public int[][] sobelMask(int[][] greyScale){
         int [] [] pixels = greyScale;
-        int[][] gX = {
-                { -1,  0,  1 },
-                { -2,  0,  2 },
-                { -1,  0,  1 }
-        };
+        final int height = pixels.length;
+        final int width = pixels[0].length;
 
-        int[][] gY = {
-                {  1,  2,  1 },
-                {  0,  0,  0 },
-                { -1, -2, -1 }
-        };
+            int[][] filterX = {
+                    { -1,  0,  1 },
+                    { -2,  0,  2 },
+                    { -1,  0,  1 }
+            };
 
-        int width = pixels[0].length;
-        int height = pixels.length;
+            int[][] filterY = {
+                    {  1,  2,  1 },
+                    {  0,  0,  0 },
+                    { -1, -2, -1 }
+            };
 
-        width-=1;   //Trim Borders for Filter
-        height-=1;
-
-        for (int i = 1; i < height; i++) { //Rows
-            for (int j = 1; j < width; j++) {   //Start at 1 to remove top and left edge
-                //Cols
-                int[][] localPixels = new int[3][3];
-                int r,c;
-                r=c=0;
-
-                for (int x = i - 1; x <= i + 1; x++) {    //Get Surrounding Pixels 3x3
-                    /*
-                        O   O   O
-
-                        O   O   O
-
-                        O   O   O
-
-                        Mid point <i,j>
-                        iterate over i-1 to i+1
-                        j-1 to j+1
-                        No bounds errors occur as we have already padded our array height
-                        and width by 1 pixel. This results in 9 surrounding pixels for every pixel in this
-                        array. Although we truncate the edge pixels.
-
-                     */
-
-
-
-                    for (int y = j - 1; y <=  j + 1; y++) {
-                        localPixels[r][c++]=pixels[x][y] & 0xFF;   //Grey Value to local Pixels (Any RGB value in bit
-                        // mask works in this case I chose blue since its 8 LSB
-                        if(localPixels[r][c-1]>255  || localPixels [r][c-1]<0){ //Check for correct pixel fetch
-                            System.out.println(localPixels[r][c-1]);
+            for (int x = 1; x< height - 1; x++) {
+                for (int y = 1; y < width - 1; y++) {
+                    int grey = pixels[x][y] & 0xFF; //Retrieve Luminance
+                    //retrieve surrounding pixels
+                    int[][] local = new int[3][3];
+                    int r,c;
+                    r=c=0;
+                    for (int i = x-1; i <= x+1; i++) {
+                        for (int j = y-1; j <= y+1; j++) {
+                            local[r][c++]=pixels[i][j];
+                            if(c>2)r++;
                         }
-                        if(c>2){    //If row is full move to next column
-                            r++;
-                            c=0;
-                        }
-
                     }
 
-                }
-                int gHorz=0;
-                int gVert=0;
+                    int xWeight,yWeight;
+                    xWeight=yWeight=0;
 
-                for (int k = 0; k < 3; k++) {
-                    for (int l = 0; l < 3; l++) {
-                        gHorz+=localPixels[k][l]*gX[k][l];
-                        gVert += localPixels[k][l]*gY[k][l];
+                    for (int i = 0; i < 3; i++) {
+                        for (int j = 0; j < 3; j++) {
+                            xWeight = local[i][j]*filterX[i][j];
+                            yWeight = local[i][j]*filterY[i][j];
+                        }
                     }
-                }
 
-                int greyValue = 255 - (int)Math.sqrt(gHorz*gHorz+gVert*gVert);
+                    int greyValue = (int)Math.sqrt(xWeight*xWeight+yWeight*yWeight);
+                    if(greyValue>255)
+                        greyValue=255;
+                    else if(greyValue<0)
+                        greyValue=0;
 
-                if(greyValue<0){
-                    greyValue = 0;
-                }
-                if(greyValue>255){
-                    greyValue=255;
-                }
+                    greyValue = 255-greyValue;//Invert
 
-                System.out.println(greyValue);
-                int alpha = 0xFF >> 24; //Set pixel
-                //De-mask ARGB
-                pixels[i][j] = (alpha) + (greyValue << 16) + (greyValue << 8) +greyValue;
-
+                    pixels[x][y] = (0xFF<<24)+(greyValue<<16)+(greyValue<<8)+greyValue;
             }
+
         }
 
         return pixels;
