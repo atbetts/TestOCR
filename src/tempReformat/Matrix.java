@@ -14,6 +14,12 @@ public class Matrix {
 
     }
 
+    public Matrix(int rows, int cols){
+        this.rows = rows;this.cols = cols;
+        matrix = new double[rows][cols];
+    }
+
+
     public Matrix(int[][]matrix){
         final int row = matrix.length;
         final int col = matrix[0].length;
@@ -41,6 +47,24 @@ public class Matrix {
     public double[][] getMatrix(){
 
         return matrix;
+    }
+
+    public int[][] getIntMatrix(){
+        int [][] cast = new int[rows][cols];
+        for (int i = 0; i < matrix.length; i++) {
+            for (int j = 0; j < matrix[0].length; j++) {
+                cast[i][j] = (int)matrix[i][j];
+            }
+        }
+
+        return cast;
+    }
+
+    public void setValue(int x, int y, double val){
+        if(x>rows||y>cols||x<0||y<0){
+            throw new IllegalArgumentException(String.format("(%d,%d) not in range of [%d,%d]",x,y,rows,cols));
+        }
+        matrix[x][y] = val;
     }
 
     public Matrix multiply(Matrix m){
