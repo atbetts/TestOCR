@@ -46,16 +46,18 @@ public class Matrix {
     public Matrix multiply(Matrix m){
         final double[][] matrix1 = m.getMatrix();
         if(this.matrix[0].length!= matrix1.length){
-            throw new ArrayIndexOutOfBoundsException("Matrix Dimensions Don't Match: \n Tried" +
+            throw new IllegalArgumentException("Matrix Dimensions Don't Match: \n Tried" +
                     " multiplying a ["+ this.matrix.length+","+ this.matrix[0].length+"] by ["
                     +matrix1.length+","+matrix[0].length+"]");
         }
 
         double [][] product = new double[cols][matrix1.length];
 
-        for (int i = 0; i < this.matrix[0].length; i++) {
-            for (int j = 0; j < this.matrix.length; j++) {
-
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < matrix1[0].length; j++) {
+                for (int k = 0; k < cols; k++) {
+                    product[i][j] = matrix[i][k]*matrix1[k][j];
+                }
             }
         }
 
