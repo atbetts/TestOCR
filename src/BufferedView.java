@@ -160,6 +160,10 @@ public class BufferedView extends JPanel {
                 int convolve=0;
                 int divisor = 0;
 
+                int red,blue,green;
+
+
+
                 for (int k = 0; k < fCol; k++) {
                     for (int l = 0; l < fCol; l++) {
                         convolve+=filterGroup[k][l]*filter[k][l];
