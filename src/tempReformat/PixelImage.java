@@ -50,27 +50,28 @@ public class PixelImage {
 
         int row,col;
         row=col=0;
-
+        int alpha=0;
+        int red;
+        int green;
+        int blue;
+        boolean hasAlpha=true;
+        if(myImage.getAlphaRaster()==null){
+            alpha = 0xFF;
+            hasAlpha=false;
+            System.out.println("No Alpha");
+        }
         for (int i = 0; i < rgb.length; i+=4) {
-            int alpha=0;
-            int red;
-            int green;
-            int blue;
-            boolean hasAlpha=true;
-            if(myImage.getAlphaRaster()==null){
-                alpha = 0xFF;
-                hasAlpha=false;
-            }
+
             if(hasAlpha) {
                 alpha = rgb[i];
-                red = rgb[i+1];
+                red = rgb[i+3];
                 green = rgb[i+2];
-                blue = rgb[i+3];
+                blue = rgb[i+1];
             }else{
 
-                red = rgb[i+1];
+                red = rgb[i+3];
                 green = rgb[i+2];
-                blue = rgb[i+3];
+                blue = rgb[i+1];
 
             }
             int rgbValue = (alpha<<24) + (red<<16) + (green <<8) + (blue);
