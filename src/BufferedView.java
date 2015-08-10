@@ -16,11 +16,12 @@ public class BufferedView extends JPanel {
 
     public BufferedView(BufferedImage I){
         myImage = I;
-        
-        JFrame j = new JFrame("Grey"){{setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);setSize(500,500);setVisible(true);}};
+        image = buildPixels(sobelMask(greyScale()));
+        JFrame j = new JFrame("Grey"){{setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);setSize(myImage.getWidth()*2,myImage.getHeight());setVisible(true);}};
         j.add(this);
         j.repaint();
         j.revalidate();
+
     }
 
     public BufferedImage buildPixels(int[][] pixels){
@@ -75,7 +76,7 @@ public class BufferedView extends JPanel {
                     for (int i = x-1; i <= x+1; i++) {
                         for (int j = y-1; j <= y+1; j++) {
                             local[r][c++]=pixels[i][j];
-                            if(c>2)r++;
+                            if(c>2){r++;c=0;};
                         }
                     }
 
@@ -249,17 +250,18 @@ public class BufferedView extends JPanel {
             blur = i;
         }
     }
-
+    BufferedImage image;
     @Override
     public void paintComponent(Graphics g){
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.drawImage(myImage,null,0,0);
 
-        final BufferedImage image = buildPixels(sobelMask(greyScale()));
+
         AffineTransform at = new AffineTransform();
         at.scale(-1,1);
 
         graphics2D.transform(at);
+        if(image!=null)
         graphics2D.drawImage(image,null,-2*myImage.getWidth(),0);
 
 
