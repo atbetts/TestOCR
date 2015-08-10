@@ -68,8 +68,8 @@ public class BufferedView extends JPanel {
         width-=1;   //Trim Borders for Filter
         height-=1;
 
-        for (int i = 0; i < height; i++) { //Rows
-            for (int j = 0; j < width; j++) {
+        for (int i = 1; i < height; i++) { //Rows
+            for (int j = 1; j < width; j++) {   //Start at 1 to remove top and left edge
                 //Cols
                 int[][] localPixels = new int[3][3];
                 int r,c;
@@ -95,7 +95,11 @@ public class BufferedView extends JPanel {
 
 
                     for (int y = j - 1; y <=  j + 1; y++) {
-                        localPixels[r][c++]=pixels[x][y];
+                        localPixels[r][c++]=pixels[x][y] & 0xFF;   //Grey Value to local Pixels (Any RGB value in bit
+                        // mask works in this case I chose blue since its 8 LSB
+                        if(localPixels[r][c-1]>255  || localPixels [r][c-1]<0){ //Check for correct pixel fetch
+                            System.out.println(localPixels[r][c-1]);
+                        }
                         if(c>2){    //If row is full move to next column
                             r++;
                             c=0;
@@ -106,17 +110,27 @@ public class BufferedView extends JPanel {
                 }
                 int gHorz=0;
                 int gVert=0;
+
                 for (int k = 0; k < 3; k++) {
                     for (int l = 0; l < 3; l++) {
                         gHorz+=localPixels[k][l]*gX[k][l];
-                        gVert+=localPixels[k][l]*gY[k][l];
+                        gVert += localPixels[k][l]*gY[k][l];
                     }
                 }
 
-                int greyValue = 255-(int)Math.sqrt(gHorz*gHorz+gVert*gVert);
-                int alpha = pixels[i][j] >> 24; //Set pixel
+                int greyValue = 255 - (int)Math.sqrt(gHorz*gHorz+gVert*gVert);
+
+                if(greyValue<0){
+                    greyValue = 0;
+                }
+                if(greyValue>255){
+                    greyValue=255;
+                }
+
+                System.out.println(greyValue);
+                int alpha = 0xFF >> 24; //Set pixel
                 //De-mask ARGB
-                pixels[i][j] = ( alpha << 24) + (greyValue << 16) + (greyValue << 8) +greyValue;
+                pixels[i][j] = (alpha) + (greyValue << 16) + (greyValue << 8) +greyValue;
 
             }
         }
