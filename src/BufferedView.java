@@ -48,8 +48,8 @@ public class BufferedView extends JPanel {
     }
 
 
-    public int[][] sobelMask(){
-        int [] [] pixels = getPixels();
+    public int[][] sobelMask(int[][] greyScale){
+        int [] [] pixels = greyScale;
         int[][] gX = {
                 { -1,  0,  1 },
                 { -2,  0,  2 },
@@ -274,7 +274,7 @@ public class BufferedView extends JPanel {
         Graphics2D graphics2D = (Graphics2D) g;
         graphics2D.drawImage(myImage,null,0,0);
 
-        final BufferedImage image = buildPixels(blur(getPixels(),blur));
+        final BufferedImage image = buildPixels(sobelMask(greyScale()));
         AffineTransform at = new AffineTransform();
         at.scale(-1,1);
 
