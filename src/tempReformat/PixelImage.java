@@ -3,6 +3,7 @@ package tempReformat;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.awt.image.WritableRaster;
 
 /**
  * Created by abetts on 8/10/15.
@@ -17,7 +18,29 @@ public class PixelImage {
         this.height = height;
         this.width = width;
         myImage = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+        setMyPixels();
+    }
 
+    public PixelImage(Matrix pixels){
+        myPixels = pixels;
+        myImage = buildPixels(pixels);
+        width = pixels.getMatrix()[0].length;
+        height = pixels.getMatrix().length;
+    }
+
+    private BufferedImage buildPixels(Matrix m){
+        BufferedImage tempImg = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
+        WritableRaster raster = (WritableRaster) tempImg.getData();
+        int[][] intMatrix = m.getIntMatrix();
+        int[] to1D = new int[intMatrix.length*intMatrix[0].length];
+        int c=0;
+        for (int i = 0; i < intMatrix.length; i++) {
+            for (int j = 0; j < intMatrix[0].length; j++) {
+                to1D[c++] = intMatrix[i][j];
+            }
+        }
+        raster.setDataElements(0,0,width,height, to1D);
+        return new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB){{setData(raster);}};
     }
 
     private void setMyPixels(){
@@ -57,11 +80,14 @@ public class PixelImage {
                 row++;
             }
         }
-
+        myPixels = pix;
     }
 
     public void draw(Graphics g,int x ,int y){
-        g.drawImage(myImage,x,y,null);
+        if(myPixels==null){
+            setMyPixels();
+        }
+        g.drawImage(buildPixels(myPixels), x, y, null);
     }
 
     public PixelImage(BufferedImage bufferedImage){

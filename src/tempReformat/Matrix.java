@@ -51,9 +51,10 @@ public class Matrix {
 
     public int[][] getIntMatrix(){
         int [][] cast = new int[rows][cols];
-        for (int i = 0; i < matrix.length; i++) {
-            for (int j = 0; j < matrix[0].length; j++) {
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
                 cast[i][j] = (int)matrix[i][j];
+                System.out.println(i+","+j);
             }
         }
 
