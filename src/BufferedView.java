@@ -72,14 +72,51 @@ public class BufferedView extends JPanel {
             for (int j = 0; j < width; j++) {
                 //Cols
                 int[][] localPixels = new int[3][3];
-                for (int x = Math.max(i - 1, 0); x < Math.min(height, i + 2); x++) {    //Get Surrounding Pixels 3x3
-                    for (int y = Math.max(j - 1, 0); y < Math.min(width, j + 2); y++) {
+                int r,c;
+                r=c=0;
+
+                for (int x = i - 1; x <= i + 1; x++) {    //Get Surrounding Pixels 3x3
+                    /*
+                        O   O   O
+
+                        O   O   O
+
+                        O   O   O
+
+                        Mid point <i,j>
+                        iterate over i-1 to i+1
+                        j-1 to j+1
+                        No bounds errors occur as we have already padded our array height
+                        and width by 1 pixel. This results in 9 surrounding pixels for every pixel in this
+                        array. Although we truncate the edge pixels.
+
+                     */
 
 
 
+                    for (int y = j - 1; y <=  j + 1; y++) {
+                        localPixels[r][c++]=pixels[x][y];
+                        if(c>2){    //If row is full move to next column
+                            r++;
+                            c=0;
+                        }
+
+                    }
+
+                }
+                int gHorz=0;
+                int gVert=0;
+                for (int k = 0; k < 3; k++) {
+                    for (int l = 0; l < 3; l++) {
+                        gHorz+=localPixels[k][l]*gX[k][l];
+                        gVert+=localPixels[k][l]*gY[k][l];
                     }
                 }
 
+                int greyValue = 255-(int)Math.sqrt(gHorz*gHorz+gVert*gVert);
+                int alpha = pixels[i][j] >> 24; //Set pixel
+                //De-mask ARGB
+                pixels[i][j] = ( alpha << 24) + (greyValue << 16) + (greyValue << 8) +greyValue;
 
             }
         }
