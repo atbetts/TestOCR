@@ -26,7 +26,7 @@ public class MatrixTesting {
         System.out.println(gaussianBlur.getSurroundingValues(0, 0));
         final Matrix x = matrix.vertCat(matrix).horzCat(gaussianBlur.vertCat(gaussianBlur));
         System.out.println(x);
-        System.out.println(x.subMatrix(1, 1, 6, 6));
+        System.out.println(x.subMatrix(3, 4, 5, 5));
     }
 
 

@@ -133,54 +133,19 @@ public class PixelImage {
 
         final Matrix copyPixels = new Matrix(this.myPixels);
         final int rows = copyPixels.getRows();
+        final int cols = copyPixels.getCols();
+
         for (int i = 0; i < rows; i++) {
-            final int cols = copyPixels.getCols();
-            Matrix m = new Matrix(3,3);
             for (int j = 0; j < cols; j++) {
-                // Get neighboring pixels
+
+                int r, b, g;
 
 
-                for (int k = i-1; k <= i+1 ; k++) {
-                    int row,col;
-                    row=col=0;
-                    for (int l = j-1; l <= j+1; l++) {
-                        //Wrap Edges
-                        int wrapC=l,wrapR=k;
-                        if(l<0){
-                            wrapC = cols +l;
-                        }else if(l>= cols){
-                            wrapC = l- cols;
-                        }
-                        if(k<0){
-                            wrapR = rows +k;
-                        }else if(k>= rows){
-                            wrapR = k- rows;
-                        }
+                int color = (int) copyPixels.getValue(i, j);
+                b = color & 0xFF;
+                g = color >> 8 & 0xFF;
+                r = color >> 16 & 0xFF;
 
-                        m.setValue(row, col++, copyPixels.getValue(wrapR, wrapC));
-                        if(col>2){
-                            col=0;
-                            row++;
-                        }
-
-                    }
-                }
-                int r,b,g,count;
-                r=b=g=count=0;
-                for (int k = 0; k < 3; k++) {
-                    for (int l = 0; l < 3; l++) {
-                        int color = (int)m.getValue(k,l);
-                        b = color & 0xFF;
-                        g = color >> 8 & 0xFF;
-                        r = color >> 16 & 0xFF;
-                        System.out.println(m.getValue(k, l));
-                        count++;
-                    }
-                }
-
-                r = r/count;
-                b = b/count;
-                g = g/count;
 
                 int grey = (int) (.21 * r + .07 * b + .72 * g);
                 int average = (0xFF << 24) + (grey << 16) + (grey << 8) + (grey);
