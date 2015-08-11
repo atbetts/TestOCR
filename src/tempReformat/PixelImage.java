@@ -129,6 +129,22 @@ public class PixelImage {
         g.drawImage(greyScale(), x, y, null);
     }
 
+
+    public BufferedImage filter(Matrix m) {
+        final Matrix copyPixels = new Matrix(this.myPixels);
+        final int rows = copyPixels.getRows();
+        final int cols = copyPixels.getCols();
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                copyPixels.setValue(i, j, myPixels.getSurroundingValues(i, j).convolve(m));
+            }
+        }
+
+        return buildPixels(copyPixels);
+    }
+
+
     public  BufferedImage greyScale(){
 
         final Matrix copyPixels = new Matrix(this.myPixels);
