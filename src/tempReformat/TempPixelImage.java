@@ -44,6 +44,7 @@ public class TempPixelImage {
         setMyPixels();
     }
 
+
     public TempPixelImage(Pixel[][] pixels) {
         pixGrid = pixels;
         myImage = buildPixels(pixGrid);
@@ -51,12 +52,19 @@ public class TempPixelImage {
         height = pixGrid.length;
     }
 
+
     public TempPixelImage(BufferedImage bufferedImage) {
         myImage = bufferedImage;
         width = myImage.getWidth();
         height = myImage.getHeight();
         pixGrid = new Pixel[height][width];
         setMyPixels();
+
+    }
+
+    public void filterPixels() {
+
+
 
     }
 
