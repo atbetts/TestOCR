@@ -3,6 +3,7 @@ package tempReformat;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
+import java.awt.image.DataBufferInt;
 import java.awt.image.WritableRaster;
 
 /**
@@ -12,6 +13,7 @@ public class PixelImage {
 
     private int width,height;
     private BufferedImage myImage;
+
     private Matrix myPixels;
 
     private Matrix gaussianBlur = new Matrix(
@@ -82,55 +84,102 @@ public class PixelImage {
     }
 
     private void setMyPixels(){
-        byte[] rgb =  ((DataBufferByte)myImage.getRaster().getDataBuffer()).getData();
-
-        Matrix pix = new Matrix(height,width);
-
-        int row,col;
-        row=col=0;
-        int alpha=0;
-        int red;
-        int green;
-        int blue;
-        boolean hasAlpha=true;
-        if(myImage.getAlphaRaster()==null){
-            alpha = 0xFF;
-            hasAlpha=false;
-            System.out.println("No Alpha");
+        boolean intArray = false;
+        byte[] rgb = null;
+        int[] rgbint = null;
+        try {
+            rgb = ((DataBufferByte) myImage.getRaster().getDataBuffer()).getData();
+        } catch (Exception e) {
+            rgbint = ((DataBufferInt) myImage.getRaster().getDataBuffer()).getData();
+            intArray = true;
         }
-        for (int i = 0; i < rgb.length; i+=4) {
 
-            if(hasAlpha) {
-                alpha = rgb[i];
-                red = rgb[i+3];
-                green = rgb[i+2];
-                blue = rgb[i+1];
-            }else{
+        if (!intArray) {
+            Matrix pix = new Matrix(height, width);
 
-                red = rgb[i+3];
-                green = rgb[i+2];
-                blue = rgb[i+1];
-
+            int row, col;
+            row = col = 0;
+            int alpha = 0;
+            int red;
+            int green;
+            int blue;
+            boolean hasAlpha = true;
+            if (myImage.getAlphaRaster() == null) {
+                alpha = 0xFF;
+                hasAlpha = false;
+                System.out.println("No Alpha");
             }
-            int rgbValue = (alpha<<24) + (red<<16) + (green <<8) + (blue);
-            pix.setValue(row,col++,rgbValue);
-            if(col>=width){
-                col = 0;
-                row++;
+            for (int i = 0; i < rgb.length; i += 4) {
+
+                if (hasAlpha) {
+                    alpha = rgb[i];
+                    red = rgb[i + 3];
+                    green = rgb[i + 2];
+                    blue = rgb[i + 1];
+                } else {
+
+                    red = rgb[i + 3];
+                    green = rgb[i + 2];
+                    blue = rgb[i + 1];
+
+                }
+                int rgbValue = (alpha << 24) + (red << 16) + (green << 8) + (blue);
+                pix.setValue(row, col++, rgbValue);
+                if (col >= width) {
+                    col = 0;
+                    row++;
+                }
             }
+            myPixels = pix;
+        } else {
+            Matrix pix = new Matrix(height, width);
+
+            int row, col;
+            row = col = 0;
+            for (int i = 0; i < rgbint.length; i++) {
+
+                pix.setValue(row, col++, rgbint[i]);
+                if (col >= width) {
+                    col = 0;
+                    row++;
+                }
+            }
+            myPixels = pix;
         }
-        myPixels = pix;
     }
 
     public void draw(Graphics g,int x ,int y){
         if(myPixels==null){
             setMyPixels();
         }
-        g.drawImage(greyScale(), x, y, null);
+        invert();
+
+        g.drawImage(buildPixels(myPixels), x, y, null);
     }
 
 
-    public BufferedImage filter(Matrix m) {
+    public void invert() {
+        for (int i = 0; i < myPixels.getRows(); i++) {
+            for (int j = 0; j < myPixels.getCols(); j++) {
+                int r, g, b;
+                int color = (int) myPixels.getValue(i, j);
+                r = color >> 16 & 0xFF;
+                g = color >> 8 & 0xFF;
+                b = color & 0xFF;
+                r = 255 - r;
+                g = 255 - g;
+                b = 255 - b;
+                color = color >> 24;
+                color = color << 24 + r << 16 + g << 8 + b;
+
+                myPixels.setValue(i, j, color);
+            }
+        }
+
+
+    }
+
+    public BufferedImage filteredImage(Matrix m) {
         final Matrix copyPixels = new Matrix(this.myPixels);
         final int rows = copyPixels.getRows();
         final int cols = copyPixels.getCols();
@@ -145,7 +194,22 @@ public class PixelImage {
     }
 
 
-    public  BufferedImage greyScale(){
+    public void applyFilter(Matrix m) {
+        final Matrix copyPixels = new Matrix(this.myPixels);
+        final int rows = copyPixels.getRows();
+        final int cols = copyPixels.getCols();
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                copyPixels.setValue(i, j, myPixels.getSurroundingValues(i, j).convolve(m));
+            }
+        }
+
+        myPixels = copyPixels;
+    }
+
+
+    public void greyScale() {
 
         final Matrix copyPixels = new Matrix(this.myPixels);
         final int rows = copyPixels.getRows();
@@ -169,7 +233,8 @@ public class PixelImage {
             }
         }
 
-        return buildPixels(copyPixels);
+        myImage = buildPixels(copyPixels);
+        setMyPixels();
     }
 
 }

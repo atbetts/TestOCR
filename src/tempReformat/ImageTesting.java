@@ -14,7 +14,7 @@ public class ImageTesting {
 
     public static void main(String...args) throws Exception{
 
-        BufferedImage img  = ImageIO.read(new File("mount.png"));
+        BufferedImage img = ImageIO.read(new File("edge.jpg"));
         pixelImage = new PixelImage(img);
 
         JFrame test = new JFrame("Image Window");
@@ -22,10 +22,6 @@ public class ImageTesting {
         test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         test.setSize(img.getWidth(), img.getHeight());
         test.setVisible(true);
-
-
-
-
 
 
     }
