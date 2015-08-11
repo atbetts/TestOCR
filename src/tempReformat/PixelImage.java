@@ -14,6 +14,27 @@ public class PixelImage {
     private BufferedImage myImage;
     private Matrix myPixels;
 
+    private Matrix gaussianBlur = new Matrix(
+            new double[][]{
+                    {1, 1, 1},
+                    {1, 1, 1},
+                    {1, 1, 1}}
+    );
+    private Matrix sobelY = new Matrix(
+            new double[][]{
+                    {-1, -2, -1},
+                    {0, 0, 0},
+                    {1, 2, 1}}
+    );
+    private Matrix sobelX = new Matrix(
+            new double[][]{
+                    {-1, 0, 1},
+                    {-2, 0, 2},
+                    {-1, 0, 1}}
+    );
+
+
+
     public PixelImage(int height, int width){
         this.height = height;
         this.width = width;
@@ -28,6 +49,13 @@ public class PixelImage {
         height = pixels.getMatrix().length;
     }
 
+    public PixelImage(BufferedImage bufferedImage) {
+        myImage = bufferedImage;
+        width = myImage.getWidth();
+        height = myImage.getHeight();
+
+    }
+
     private BufferedImage buildPixels(Matrix m){
         BufferedImage tempImg = new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB);
         WritableRaster raster = (WritableRaster) tempImg.getData();
@@ -39,7 +67,7 @@ public class PixelImage {
                 to1D[c++] = intMatrix[i][j];
             }
         }
-        raster.setDataElements(0,0,width,height, to1D);
+        raster.setDataElements(0, 0, width, height, to1D);
         return new BufferedImage(width,height,BufferedImage.TYPE_INT_ARGB){{setData(raster);}};
     }
 
@@ -101,14 +129,6 @@ public class PixelImage {
         g.drawImage(greyScale(), x, y, null);
     }
 
-    public PixelImage(BufferedImage bufferedImage){
-        myImage = bufferedImage;
-        width = myImage.getWidth();
-        height = myImage.getHeight();
-
-    }
-
-
     public  BufferedImage greyScale(){
 
         final Matrix copyPixels = new Matrix(this.myPixels);
@@ -150,19 +170,20 @@ public class PixelImage {
                 for (int k = 0; k < 3; k++) {
                     for (int l = 0; l < 3; l++) {
                         int color = (int)m.getValue(k,l);
-                        b+= color & 0xFF;
-                        g+= color >> 8 & 0xFF;
-                        r+= color >> 16 & 0xFF;
+                        b = color & 0xFF;
+                        g = color >> 8 & 0xFF;
+                        r = color >> 16 & 0xFF;
+                        System.out.println(m.getValue(k, l));
                         count++;
                     }
                 }
+
                 r = r/count;
                 b = b/count;
                 g = g/count;
 
-                int grey = (r+b+g)/3;
-
-                int average = (0xFF<<24)+(r<<16)+(g<<8)+(b);
+                int grey = (int) (.21 * r + .07 * b + .72 * g);
+                int average = (0xFF << 24) + (grey << 16) + (grey << 8) + (grey);
                 copyPixels.setValue(i, j, average);
             }
         }

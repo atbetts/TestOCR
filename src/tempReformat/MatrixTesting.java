@@ -6,8 +6,8 @@ package tempReformat;
 public class MatrixTesting {
     public static void main(String[]args){
 
-        Matrix matrix = new Matrix(new double[][]{{9,8,7},{6,5,4},{3,2,1}});
-        Matrix matrix1 = new Matrix(new double[][]{
+        Matrix matrix = new Matrix(new int[][]{{1, 2, 1}, {1, 2, 1}, {1, 2, 1}});
+        Matrix matrix1 = new Matrix(new int[][]{
                 {1, 2, 3},
                 {4, 5, 6},
                 {7, 8, 9}});
@@ -15,14 +15,16 @@ public class MatrixTesting {
         System.out.println(matrix1.toString());
         System.out.println(matrix.multiply(matrix1).toString());
 
-        Matrix conv = new Matrix(
-                new double[][]{
-                        {1, -1, 1},
-                        {-1, 10, -1},
-                        {1, -1, 1}}
+        Matrix gaussianBlur = new Matrix(
+                new int[][]{
+                        {1, 2, 3},
+                        {8, 1, 4},
+                        {7, 6, 5}}
         );
-        System.out.println(matrix1.convolve(conv) + "= Conv");
 
+        System.out.printf("Convolve = %.3f%n", matrix.convolve(gaussianBlur));
+        System.out.println(gaussianBlur.getSurroundingValues(0, 0));
+        System.out.println(matrix.vertCat(matrix).horzCat(gaussianBlur.vertCat(gaussianBlur)));
     }
 
 

@@ -68,6 +68,10 @@ public class Matrix {
         cols = col;
     }
 
+    public Matrix(Dimension dimension) {
+        this((int) dimension.getWidth(), (int) dimension.getHeight());
+    }
+
     public Dimension getBounds(){
         return new Dimension(rows,cols);
     }
@@ -156,6 +160,82 @@ public class Matrix {
 
         return new Matrix(product);
     }
+
+    public Matrix getSurroundingValues(int x, int y) {
+        Matrix copy = new Matrix(3, 3);
+        int r, c;
+        r = c = 0;
+        final int i = x + 1;
+        final int i1 = y + 1;
+        final int i2 = x - 1;
+        final int i3 = y - 1;
+
+        for (int k = i2; k <= i; k++) {
+
+            for (int l = i3; l <= i1; l++) {
+                int wrapR = k;
+                int wrapC = l;
+                if (k < 0) {
+                    wrapR = rows + (i2);
+                } else if (k >= rows) {
+                    wrapR = i - rows;
+                }
+
+                if (l < 0) {
+                    wrapC = cols + (i3);
+                } else if (l >= cols) {
+                    wrapC = i1 - cols;
+                }
+
+                copy.setValue(r, c++, this.getValue(wrapR, wrapC));
+                if (c > 2) {
+                    c = 0;
+                    r++;
+                }
+            }
+        }
+
+
+        return copy;
+    }
+
+    public Matrix horzCat(Matrix m) {
+        if (rows != m.getRows()) {
+            throw new IllegalArgumentException("Rows Do Not Match! " + rows + "!=" + m.rows + " Can't Concatenate");
+        }
+        Matrix copy = new Matrix(rows, cols + m.getCols());
+        for (int i = 0; i < cols + m.getCols(); i++) {
+            for (int j = 0; j < rows; j++) {
+                if (j < cols) {
+                    copy.setValue(i, j, getValue(i, j));
+                } else {
+                    copy.setValue(i, j, m.getValue(i, j - cols));
+                }
+            }
+        }
+
+        return copy;
+    }
+
+    public Matrix vertCat(Matrix m) {
+        if (cols != m.getCols()) {
+            throw new IllegalArgumentException("Cols Do Not Match! " + cols + "!=" + m.cols + " Can't Concatenate");
+        }
+        Matrix copy = new Matrix(rows + m.getRows(), cols);
+        for (int i = 0; i < rows + m.getRows(); i++) {
+            for (int j = 0; j < cols; j++) {
+                if (i < rows) {
+                    copy.setValue(i, j, getValue(i, j));
+                } else {
+                    copy.setValue(i, j, m.getValue(i - rows, j));
+                }
+            }
+        }
+
+        return copy;
+    }
+
+
 
     public String toString(){
         StringBuilder s = new StringBuilder();
