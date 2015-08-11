@@ -22,6 +22,17 @@ public class Pixel {
         setGreen(green);
     }
 
+    public Pixel(int red, int green, int blue, int alpha) {
+        setRed(red);
+        setBlue(blue);
+        setGreen(green);
+        setAlpha(alpha);
+    }
+
+    public Pixel greyScale() {
+        return new Pixel((int) (getRed() * .21), (int) (getGreen() * .72), (int) (getBlue() * .07), getAlpha());
+    }
+
     public void setColor(int red, int green, int blue) {
         setRed(red);
         setBlue(blue);
