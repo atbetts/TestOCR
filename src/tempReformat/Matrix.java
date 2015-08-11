@@ -199,6 +199,29 @@ public class Matrix {
         return copy;
     }
 
+    public Matrix subMatrix(int x, int y, int i, int j) {
+        if (i - x < 0 || j - y < 0) {
+            throw new IllegalArgumentException("Can't Have a negative range! Check Bounds");
+        }
+        Matrix copy = new Matrix(i - x, j - y);
+        if (x < 0 || x > rows || i < 0 || i > rows || y > cols || y < 0 || j < 0 || j > cols) {
+            throw new IllegalArgumentException("Matrix Does not Contain Entered Range[" + x + ":" + i + "] and range [" + y + ":" + j + "]");
+        }
+        int r, c;
+        r = c = 0;
+        for (int k = x; k < i; k++) {
+            for (int l = y; l < j; l++) {
+                copy.setValue(r, c++, this.getValue(k, l));
+                if (c >= j - y) {
+                    c = 0;
+                    r++;
+                }
+            }
+        }
+        return copy;
+    }
+
+
     public Matrix horzCat(Matrix m) {
         if (rows != m.getRows()) {
             throw new IllegalArgumentException("Rows Do Not Match! " + rows + "!=" + m.rows + " Can't Concatenate");

@@ -24,7 +24,9 @@ public class MatrixTesting {
 
         System.out.printf("Convolve = %.3f%n", matrix.convolve(gaussianBlur));
         System.out.println(gaussianBlur.getSurroundingValues(0, 0));
-        System.out.println(matrix.vertCat(matrix).horzCat(gaussianBlur.vertCat(gaussianBlur)));
+        final Matrix x = matrix.vertCat(matrix).horzCat(gaussianBlur.vertCat(gaussianBlur));
+        System.out.println(x);
+        System.out.println(x.subMatrix(1, 1, 6, 6));
     }
 
 
