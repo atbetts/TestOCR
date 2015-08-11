@@ -6,7 +6,7 @@ import java.awt.*;
  * Created by abetts on 8/11/15.
  */
 public class Pixel {
-    private int r, g, b;
+    private int r = 0, g = 0, b = 0;
     private int alpha = 0xFF;
 
     public Pixel(int argb) {
@@ -62,7 +62,7 @@ public class Pixel {
 
     public int getARGB() {
 
-        return alpha << 24 + r << 16 + g << 8 + b;
+        return (0xFF << 24) + (r << 16) + (g << 8) + b;
 
     }
 
@@ -104,6 +104,10 @@ public class Pixel {
         }
         b = c;
         return true;
+    }
+
+    public String toString() {
+        return String.format("Red=%d:Green=%d:Blue=%d:Alpha=%d", r, g, b, alpha);
     }
 
 }

@@ -55,16 +55,19 @@ public class TempPixelImage {
         myImage = bufferedImage;
         width = myImage.getWidth();
         height = myImage.getHeight();
+        pixGrid = new Pixel[height][width];
         setMyPixels();
 
     }
 
     private BufferedImage buildPixels(Pixel[][] pixels) {
+
         BufferedImage tempImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         WritableRaster raster = (WritableRaster) tempImg.getData();
 
         int[] to1D = new int[pixels.length * pixels[0].length];
         int c = 0;
+
         for (int i = 0; i < pixels.length; i++) {
             for (int j = 0; j < pixels[0].length; j++) {
                 to1D[c++] = pixels[i][j].getARGB();
@@ -99,10 +102,11 @@ public class TempPixelImage {
         } catch (Exception e) {
             rgbint = ((DataBufferInt) myImage.getRaster().getDataBuffer()).getData();
             intArray = true;
+
         }
 
         if (!intArray) {
-            Matrix pix = new Matrix(height, width);
+
 
             int row, col;
             row = col = 0;
@@ -114,52 +118,52 @@ public class TempPixelImage {
             if (myImage.getAlphaRaster() == null) {
                 alpha = 0xFF;
                 hasAlpha = false;
-                System.out.println("No Alpha");
             }
             for (int i = 0; i < rgb.length; i += 4) {
 
                 if (hasAlpha) {
-                    alpha = rgb[i];
-                    red = rgb[i + 3];
-                    green = rgb[i + 2];
-                    blue = rgb[i + 1];
+                    alpha = rgb[i] & 0xFF;
+                    red = rgb[i + 3] & 0xFF;
+                    green = rgb[i + 2] & 0xFF;
+                    blue = rgb[i + 1] & 0xFF;
                 } else {
 
-                    red = rgb[i + 3];
-                    green = rgb[i + 2];
-                    blue = rgb[i + 1];
+                    red = rgb[i + 3] & 0xFF;
+                    green = rgb[i + 2] & 0xFF;
+                    blue = rgb[i + 1] & 0xFF;
 
                 }
-                int rgbValue = (alpha << 24) + (red << 16) + (green << 8) + (blue);
-                pixGrid[row][col] = new Pixel(red, green, blue);
-                pix.setValue(row, col++, rgbValue);
+
+                pixGrid[row][col++] = new Pixel(red, green, blue, alpha);
 
                 if (col >= width) {
                     col = 0;
                     row++;
                 }
+
             }
         } else {
-            Matrix pix = new Matrix(height, width);
 
             int row, col;
             row = col = 0;
             for (int i = 0; i < rgbint.length; i++) {
-                pixGrid[row][col] = new Pixel(rgbint[i]);
-                pix.setValue(row, col++, rgbint[i]);
+                pixGrid[row][col++] = new Pixel(rgbint[i]);
+
                 if (col >= width) {
+
                     col = 0;
                     row++;
                 }
             }
         }
+
+
     }
 
     public void draw(Graphics g, int x, int y) {
         if (pixGrid == null) {
             setMyPixels();
         }
-        invert();
 
         g.drawImage(buildPixels(pixGrid), x, y, null);
     }

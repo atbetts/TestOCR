@@ -11,12 +11,11 @@ import java.io.File;
  */
 public class ImageTesting {
     static PixelImage pixelImage;
-
+    static TempPixelImage temp;
     public static void main(String...args) throws Exception{
 
-        BufferedImage img = ImageIO.read(new File("edge.jpg"));
-        pixelImage = new PixelImage(img);
-
+        BufferedImage img = ImageIO.read(new File("bear.png"));
+        temp = new TempPixelImage(img);
         JFrame test = new JFrame("Image Window");
         test.add(new ImgView());
         test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -30,7 +29,7 @@ public class ImageTesting {
 
 
         public void paintComponent(Graphics g){
-            pixelImage.draw(g,0,0);
+            temp.draw(g, 0, 0);
 
         }
 
