@@ -15,6 +15,7 @@ public class ImageTesting {
     public static void main(String...args) throws Exception{
 
         BufferedImage img = ImageIO.read(new File("bear.png"));
+
         temp = new TempPixelImage(img);
         JFrame test = new JFrame("Image Window");
         test.add(new ImgView());

@@ -107,6 +107,7 @@ public class TempPixelImage {
         int[] rgbint = null;
         try {
             rgb = ((DataBufferByte) myImage.getRaster().getDataBuffer()).getData();
+            System.out.println(rgb.length / (4 * width) / height);
         } catch (Exception e) {
             rgbint = ((DataBufferInt) myImage.getRaster().getDataBuffer()).getData();
             intArray = true;
@@ -172,7 +173,7 @@ public class TempPixelImage {
         if (pixGrid == null) {
             setMyPixels();
         }
-
+        invert();
         g.drawImage(buildPixels(pixGrid), x, y, null);
     }
 
