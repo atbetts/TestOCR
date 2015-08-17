@@ -2,8 +2,7 @@ package tempReformat;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.DataBufferByte;
-import java.awt.image.DataBufferInt;
+import java.awt.image.DataBuffer;
 import java.awt.image.WritableRaster;
 
 /**
@@ -40,6 +39,7 @@ public class TempPixelImage {
     public TempPixelImage(int height, int width) {
         this.height = height;
         this.width = width;
+        pixGrid = new Pixel[height][width];
         myImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         setMyPixels();
     }
@@ -74,6 +74,7 @@ public class TempPixelImage {
         WritableRaster raster = (WritableRaster) tempImg.getData();
 
         int[] to1D = new int[pixels.length * pixels[0].length];
+        System.out.println(pixels.length);
         int c = 0;
 
         for (int i = 0; i < pixels.length; i++) {
@@ -102,69 +103,89 @@ public class TempPixelImage {
     }
 
     private void setMyPixels() {
-        boolean intArray = false;
-        byte[] rgb = null;
-        int[] rgbint = null;
-        try {
-            rgb = ((DataBufferByte) myImage.getRaster().getDataBuffer()).getData();
-            System.out.println(rgb.length / (4 * width) / height);
-        } catch (Exception e) {
-            rgbint = ((DataBufferInt) myImage.getRaster().getDataBuffer()).getData();
-            intArray = true;
-
-        }
-
-        if (!intArray) {
 
 
-            int row, col;
-            row = col = 0;
-            int alpha = 0;
-            int red;
-            int green;
-            int blue;
-            boolean hasAlpha = true;
-            if (myImage.getAlphaRaster() == null) {
-                alpha = 0xFF;
-                hasAlpha = false;
-            }
-            for (int i = 0; i < rgb.length; i += 4) {
+//        for (int i = 0; i < height; i++) {
+//            for (int j = 0; j < width; j++) {
+//
+//                try {
+//                    pixGrid[i][j] = new Pixel(myImage.getRGB(j,i));
+//                } catch (Exception e) {
+//                    System.out.println("i="+i+"|j="+j);
+//                    System.exit(1);
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
 
-                if (hasAlpha) {
-                    alpha = rgb[i] & 0xFF;
-                    red = rgb[i + 3] & 0xFF;
-                    green = rgb[i + 2] & 0xFF;
-                    blue = rgb[i + 1] & 0xFF;
-                } else {
 
-                    red = rgb[i + 3] & 0xFF;
-                    green = rgb[i + 2] & 0xFF;
-                    blue = rgb[i + 1] & 0xFF;
+        final WritableRaster raster = myImage.getRaster();
+        int dataSwitch = raster.getTransferType();
+        switch (dataSwitch) {
+            case DataBuffer.TYPE_BYTE:
+                System.out.println("DataBuffer.TYPE_BYTE");
+                byte[] rgb = new byte[width * height * raster.getNumDataElements()];
+                raster.getDataElements(0, 0, width, height, rgb);
+
+                int row, col;
+                row = col = 0;
+                int alpha = 0;
+                int red;
+                int green;
+                int blue;
+                boolean hasAlpha = true;
+                if (myImage.getAlphaRaster() == null) {
+                    alpha = 0xFF;
+                    hasAlpha = false;
+                }
+                for (int i = 0; i < rgb.length; i += 4) {
+
+                    if (hasAlpha) {
+                        alpha = rgb[i] & 0xFF;
+                        red = rgb[i + 3] & 0xFF;
+                        green = rgb[i + 2] & 0xFF;
+                        blue = rgb[i + 1] & 0xFF;
+                    } else {
+
+                        red = rgb[i + 3] & 0xFF;
+                        green = rgb[i + 2] & 0xFF;
+                        blue = rgb[i + 1] & 0xFF;
+
+                    }
+
+                    pixGrid[row][col++] = new Pixel(red, green, blue, alpha);
+
+                    if (col >= width) {
+                        col = 0;
+                        row++;
+                    }
 
                 }
 
-                pixGrid[row][col++] = new Pixel(red, green, blue, alpha);
 
-                if (col >= width) {
-                    col = 0;
-                    row++;
-                }
+                return;
+            case DataBuffer.TYPE_DOUBLE:
+                System.out.println("DataBuffer.DOUBLE");
+                break;
+            case DataBuffer.TYPE_FLOAT:
+                System.out.println("DataBuffer.FLOAT");
+                break;
+            case DataBuffer.TYPE_INT:
+                System.out.println("DataBuffer.INT");
+                break;
+            case DataBuffer.TYPE_SHORT:
+                System.out.println("DataBuffer.SHORT");
+                break;
+            case DataBuffer.TYPE_UNDEFINED:
+                System.out.println("DataBuffer.UNDEFINED");
+                break;
+            case DataBuffer.TYPE_USHORT:
+                System.out.println("DataBuffer.USHORT");
+                break;
 
+            default:
+                break;
             }
-        } else {
-
-            int row, col;
-            row = col = 0;
-            for (int i = 0; i < rgbint.length; i++) {
-                pixGrid[row][col++] = new Pixel(rgbint[i]);
-
-                if (col >= width) {
-
-                    col = 0;
-                    row++;
-                }
-            }
-        }
 
 
     }
@@ -173,7 +194,6 @@ public class TempPixelImage {
         if (pixGrid == null) {
             setMyPixels();
         }
-        invert();
         g.drawImage(buildPixels(pixGrid), x, y, null);
     }
 
