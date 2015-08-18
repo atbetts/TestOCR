@@ -30,7 +30,8 @@ public class Pixel {
     }
 
     public Pixel greyScale() {
-        return new Pixel((int) (getRed() * .21), (int) (getGreen() * .72), (int) (getBlue() * .07), getAlpha());
+        final int grey = (int) (getRed() * .21) + (int) (getGreen() * .72) + (int) (getBlue() * .07);
+        return new Pixel(grey, grey, grey, getAlpha());
     }
 
     public void setColor(int red, int green, int blue) {

@@ -149,6 +149,8 @@ public class TempPixelImage {
                         green = rgb[i + 1] & 0xFF;
                         blue = rgb[i + 2] & 0xFF;
                         alpha = rgb[i + 3] & 0xFF;
+                    } else if (numElem == 1) {
+                        red = green = blue = 255 * rgb[i];
                     }
 
                     pixGrid[row][col++] = new Pixel(red, green, blue, alpha);
@@ -199,13 +201,16 @@ public class TempPixelImage {
         System.out.println(width + "x" + height);
 
 
+        greyScale();
+        myImage = buildPixels(pixGrid);
+
     }
 
     public void draw(Graphics g, int x, int y) {
         if (pixGrid == null) {
             setMyPixels();
         }
-        g.drawImage(buildPixels(pixGrid), x, y, null);
+        g.drawImage(myImage, x, y, null);
     }
 
 
