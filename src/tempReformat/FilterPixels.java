@@ -24,7 +24,10 @@ public class FilterPixels {
             System.out.println("Kernel larger than image");
             return;
         }
-
+        if (kernel.length % 2 == 0) {
+            System.out.println("Need odd bounds");
+            return;
+        }
 
         int kernelWeight = 0;
         int kernelCount = 0;
@@ -36,12 +39,15 @@ public class FilterPixels {
                 }
             }
         }
-
+        if (kernelWeight == 0) {
+            kernelWeight = 1;
+        }
+        System.out.println("kernelWeight = " + kernelWeight);
 
         //Consider Temp storing of only kernel height pixels
         //Truncates border for now
-        for (int i = 1; i < image.length - 1; i++) {
-            for (int j = 1; j < image[0].length - 1; j++) {
+        for (int i = 2; i < image.length - 2; i++) {
+            for (int j = 2; j < image[0].length - 2; j++) {
 
                 int red_w = 0;
                 int blue_w = 0;
@@ -51,15 +57,15 @@ public class FilterPixels {
                 int count = 0;
                 int row = 0;
 
-                for (int x = Math.max(0, i - 1); x < Math.min(image.length, i + 2); x++) {
-                    for (int y = Math.max(0, j - 1); y < Math.min(image[0].length, j + 2); y++) {
+                for (int x = Math.max(0, i - ((kernel.length - 1) / 2)); x < Math.min(image.length, i + (kernel.length + 1) / 2); x++) {
+                    for (int y = Math.max(0, j - ((kernel.length - 1) / 2)); y < Math.min(image[0].length, j + (kernel.length + 1) / 2); y++) {
                         Pixel p = pixels[x][y];
                         int red = p.getRed();
                         int blue = p.getBlue();
                         int green = p.getGreen();
                         int alpha = p.getAlpha();
 
-                        if (count % 3 == 0) {
+                        if (count % kernel.length == 0) {
                             if (count != 0)
                             row++;
                             count = 0;
@@ -71,7 +77,10 @@ public class FilterPixels {
                         alpha_w += alpha * kernelVal;
                     }
                 }
-
+                red_w /= kernelWeight;
+                green_w /= kernelWeight;
+                blue_w /= kernelWeight;
+                alpha_w /= kernelWeight;
                 if (red_w < 0) {
                     red_w = 0;
                 }
