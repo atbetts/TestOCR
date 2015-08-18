@@ -14,7 +14,7 @@ public class ImageTesting {
     static TempPixelImage temp;
     public static void main(String...args) throws Exception{
 
-        BufferedImage img = ImageIO.read(new File("bear.jpg"));
+        BufferedImage img = ImageIO.read(new File("bear.png"));
 
         temp = new TempPixelImage(img);
         JFrame test = new JFrame("Image Window");

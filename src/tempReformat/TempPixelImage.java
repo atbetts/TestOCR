@@ -137,11 +137,6 @@ public class TempPixelImage {
                 int green;
                 int blue;
                 red = green = blue = 0;
-                if (myImage.getAlphaRaster() == null) {
-                    alpha = 0xFF;
-                    System.out.println("No Alpha");
-
-                }
                 for (int i = 0; i < rgb.length; i += numElem) {
 
 
@@ -150,10 +145,10 @@ public class TempPixelImage {
                         green = rgb[i + 1] & 0xFF;
                         blue = rgb[i + 2] & 0xFF;
                     } else if (numElem == 4) {
-                        red = rgb[i + 3] & 0xFF;
-                        green = rgb[i + 2] & 0xFF;
-                        blue = rgb[i + 1] & 0xFF;
-                        alpha = rgb[i] & 0xFF;
+                        red = rgb[i] & 0xFF;
+                        green = rgb[i + 1] & 0xFF;
+                        blue = rgb[i + 2] & 0xFF;
+                        alpha = rgb[i + 3] & 0xFF;
                     }
 
                     pixGrid[row][col++] = new Pixel(red, green, blue, alpha);
@@ -166,7 +161,7 @@ public class TempPixelImage {
                 }
 
 
-                return;
+                break;
             case DataBuffer.TYPE_DOUBLE:
                 System.out.println("DataBuffer.DOUBLE");
                 break;
@@ -201,8 +196,8 @@ public class TempPixelImage {
             default:
                 break;
         }
-
         System.out.println(width + "x" + height);
+
 
     }
 
