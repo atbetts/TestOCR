@@ -1,5 +1,7 @@
 package tempReformat;
 
+import net.sourceforge.tess4j.Tesseract;
+
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
@@ -22,7 +24,11 @@ public class ImageTesting {
         test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         test.setSize(img.getWidth(), img.getHeight());
         test.setVisible(true);
-
+        Tesseract t = new Tesseract();
+        long time = System.nanoTime();
+        final String s = t.doOCR(temp.getMyImage());
+        System.out.println("Text = " + s);
+        System.out.println(String.format("%.3f", (float) (System.nanoTime() - time) / 1e9));
 
     }
 
