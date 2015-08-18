@@ -14,7 +14,7 @@ public class ImageTesting {
     static PixelImage temp;
     public static void main(String...args) throws Exception{
 
-        BufferedImage img = ImageIO.read(new File("work.png"));
+        BufferedImage img = ImageIO.read(new File("mount.png"));
 
         temp = new PixelImage(img);
         JFrame test = new JFrame("Image Window");

@@ -95,7 +95,13 @@ public class PixelImage {
         if (val > 255) {
             val = 255;
         }
-        pixGrid[x][y] = new Pixel(val);
+        pixGrid[x][y] = new Pixel(val, Pixel.ARGB_PIXEL);
+    }
+
+
+    public void setPixel(int x, int y, Color color) {
+
+        pixGrid[x][y] = new Pixel(color);
     }
 
     public void setPixel(int x, int y, Pixel p) {

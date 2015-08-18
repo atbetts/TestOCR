@@ -6,27 +6,41 @@ import java.awt.*;
  * Created by abetts on 8/11/15.
  */
 public class Pixel {
+    public static final String ARGB_PIXEL = "ARGTHOLMAO";
+    public static final String SOLID_COLOR = "SOLIDCOLORTHOLMAO";
     private int r = 0, g = 0, b = 0;
     private int alpha = 0xFF;
 
-    public Pixel(int argb) {
-        setAlpha(alpha = argb >> 24);
-        setRed(argb >> 16 & 0xFF);
-        setGreen(argb >> 8 & 0xFF);
-        setBlue(argb & 0xFF);
+    public Pixel(int argb, String... args) {
+        for (String identifier : args)
+            switch (identifier) {
+
+                case ARGB_PIXEL:
+                    setAlpha(argb >> 24);
+                    setRed(argb >> 16 & 0xFF);
+                    setGreen(argb >> 8 & 0xFF);
+                    setBlue(argb & 0xFF);
+                    return;
+                case SOLID_COLOR:
+                    setColor(argb, argb, argb);
+                    return;
+                default:
+                    break;
+
+            }
     }
 
     public Pixel(int red, int green, int blue) {
-        setRed(red);
-        setBlue(blue);
-        setGreen(green);
+        this(red, green, blue, 255);
+    }
+
+    public Pixel(Color color) {
+        this(color.getRGB(), ARGB_PIXEL);
+        setAlpha(color.getAlpha());
     }
 
     public Pixel(int red, int green, int blue, int alpha) {
-        setRed(red);
-        setBlue(blue);
-        setGreen(green);
-        setAlpha(alpha);
+        setColor(red, green, blue, alpha);
     }
 
     public Pixel greyScale() {
@@ -35,9 +49,7 @@ public class Pixel {
     }
 
     public void setColor(int red, int green, int blue) {
-        setRed(red);
-        setBlue(blue);
-        setGreen(green);
+        setColor(red, green, blue, 255);
     }
 
     public void setColor(int red, int green, int blue, int alpha) {
