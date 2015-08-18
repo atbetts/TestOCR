@@ -94,11 +94,6 @@ public class FilterPixels {
 
                 final Pixel pixel = new Pixel(red_w, green_w, blue_w, alpha_w);
 
-
-                if (!pixel.equals(image[i][j])) {
-                    System.out.print("pixel = " + pixel + "\t");
-                    System.out.println("image[" + i + "][" + j + "] = " + image[i][j]);
-                }
                 image[i][j] = pixel;
 
             }

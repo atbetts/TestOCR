@@ -211,9 +211,7 @@ public class PixelImage {
         }
         System.out.println(width + "x" + height);
 
-        FilterPixels.ApplyKernel(new int[][]{
-                {0, 0, 0}, {0, 1, 0}, {0, 0, 0}
-        }, pixGrid);
+
         myImage = buildPixels(pixGrid);
 
     }
