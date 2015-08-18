@@ -8,7 +8,7 @@ import java.awt.image.WritableRaster;
 /**
  * Created by abetts on 8/11/15.
  */
-public class TempPixelImage {
+public class PixelImage {
 
 
     private int width, height;
@@ -36,7 +36,7 @@ public class TempPixelImage {
     );
 
 
-    public TempPixelImage(int height, int width) {
+    public PixelImage(int height, int width) {
         this.height = height;
         this.width = width;
         pixGrid = new Pixel[height][width];
@@ -45,7 +45,7 @@ public class TempPixelImage {
     }
 
 
-    public TempPixelImage(Pixel[][] pixels) {
+    public PixelImage(Pixel[][] pixels) {
         pixGrid = pixels;
         myImage = buildPixels(pixGrid);
         width = pixGrid[0].length;
@@ -53,7 +53,7 @@ public class TempPixelImage {
     }
 
 
-    public TempPixelImage(BufferedImage bufferedImage) {
+    public PixelImage(BufferedImage bufferedImage) {
         myImage = bufferedImage;
         width = myImage.getWidth();
         height = myImage.getHeight();

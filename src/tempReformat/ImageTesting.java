@@ -11,12 +11,12 @@ import java.io.File;
  */
 public class ImageTesting {
     static PixelImage pixelImage;
-    static TempPixelImage temp;
+    static PixelImage temp;
     public static void main(String...args) throws Exception{
 
         BufferedImage img = ImageIO.read(new File("work.png"));
 
-        temp = new TempPixelImage(img);
+        temp = new PixelImage(img);
         JFrame test = new JFrame("Image Window");
         test.add(new ImgView());
         test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
