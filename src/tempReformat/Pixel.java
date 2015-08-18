@@ -75,7 +75,7 @@ public class Pixel {
 
     public int getARGB() {
 
-        return (0xFF << 24) + (r << 16) + (g << 8) + b;
+        return (alpha << 24) + (r << 16) + (g << 8) + b;
 
     }
 
@@ -121,6 +121,13 @@ public class Pixel {
 
     public String toString() {
         return String.format("Red=%d:Green=%d:Blue=%d:Alpha=%d", r, g, b, alpha);
+    }
+
+
+    public boolean equals(Object p) {
+        Pixel pixel = (Pixel) p;
+
+        return r == pixel.r && g == pixel.g && b == pixel.b && alpha == pixel.alpha;
     }
 
 }

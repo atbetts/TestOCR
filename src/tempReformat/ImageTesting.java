@@ -14,7 +14,7 @@ public class ImageTesting {
     static PixelImage temp;
     public static void main(String...args) throws Exception{
 
-        BufferedImage img = ImageIO.read(new File("mount.png"));
+        BufferedImage img = ImageIO.read(new File("work.png"));
 
         temp = new PixelImage(img);
         JFrame test = new JFrame("Image Window");
@@ -30,7 +30,7 @@ public class ImageTesting {
 
 
         public void paintComponent(Graphics g){
-            temp.draw(g, 0, 0);
+            g.drawImage(temp.getMyImage().getScaledInstance(500, 500, BufferedImage.SCALE_DEFAULT), 0, 0, null);
 
         }
 

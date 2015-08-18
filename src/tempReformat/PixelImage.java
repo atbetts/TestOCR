@@ -16,6 +16,7 @@ public class PixelImage {
     private Pixel[][] pixGrid;
 
 
+
     private Matrix gaussianBlur = new Matrix(
             new double[][]{
                     {1, 1, 1},
@@ -66,6 +67,10 @@ public class PixelImage {
 
 
 
+    }
+
+    public BufferedImage getMyImage() {
+        return myImage;
     }
 
     private BufferedImage buildPixels(Pixel[][] pixels) {
@@ -206,8 +211,9 @@ public class PixelImage {
         }
         System.out.println(width + "x" + height);
 
-
-        greyScale();
+        FilterPixels.ApplyKernel(new int[][]{
+                {0, 0, 0}, {0, 1, 0}, {0, 0, 0}
+        }, pixGrid);
         myImage = buildPixels(pixGrid);
 
     }
