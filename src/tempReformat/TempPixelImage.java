@@ -73,12 +73,12 @@ public class TempPixelImage {
         BufferedImage tempImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         WritableRaster raster = (WritableRaster) tempImg.getData();
 
-        int[] to1D = new int[pixels.length * pixels[0].length];
-        System.out.println(pixels.length);
+        int[] to1D = new int[width * height];
+
         int c = 0;
 
-        for (int i = 0; i < pixels.length; i++) {
-            for (int j = 0; j < pixels[0].length; j++) {
+        for (int i = 0; i < height; i++) {
+            for (int j = 0; j < width; j++) {
                 to1D[c++] = pixels[i][j].getARGB();
             }
         }
@@ -120,10 +120,13 @@ public class TempPixelImage {
 
 
         final WritableRaster raster = myImage.getRaster();
+        int numElem;
+        System.out.println("Num elements: " + (numElem = raster.getNumDataElements()));
         int dataSwitch = raster.getTransferType();
         switch (dataSwitch) {
             case DataBuffer.TYPE_BYTE:
                 System.out.println("DataBuffer.TYPE_BYTE");
+
                 byte[] rgb = new byte[width * height * raster.getNumDataElements()];
                 raster.getDataElements(0, 0, width, height, rgb);
 
@@ -133,24 +136,24 @@ public class TempPixelImage {
                 int red;
                 int green;
                 int blue;
-                boolean hasAlpha = true;
+                red = green = blue = 0;
                 if (myImage.getAlphaRaster() == null) {
                     alpha = 0xFF;
-                    hasAlpha = false;
+                    System.out.println("No Alpha");
+
                 }
-                for (int i = 0; i < rgb.length; i += 4) {
+                for (int i = 0; i < rgb.length; i += numElem) {
 
-                    if (hasAlpha) {
+
+                    if (numElem == 3) {
+                        red = rgb[i] & 0xFF;
+                        green = rgb[i + 1] & 0xFF;
+                        blue = rgb[i + 2] & 0xFF;
+                    } else if (numElem == 4) {
+                        red = rgb[i + 3] & 0xFF;
+                        green = rgb[i + 2] & 0xFF;
+                        blue = rgb[i + 1] & 0xFF;
                         alpha = rgb[i] & 0xFF;
-                        red = rgb[i + 3] & 0xFF;
-                        green = rgb[i + 2] & 0xFF;
-                        blue = rgb[i + 1] & 0xFF;
-                    } else {
-
-                        red = rgb[i + 3] & 0xFF;
-                        green = rgb[i + 2] & 0xFF;
-                        blue = rgb[i + 1] & 0xFF;
-
                     }
 
                     pixGrid[row][col++] = new Pixel(red, green, blue, alpha);
@@ -172,6 +175,18 @@ public class TempPixelImage {
                 break;
             case DataBuffer.TYPE_INT:
                 System.out.println("DataBuffer.INT");
+                int[] rgbint = new int[width * height * raster.getNumDataElements()];
+                raster.getDataElements(0, 0, width, height, rgbint);
+                int r, c;
+                r = c = 0;
+                for (int i = 0; i < rgbint.length; i++) {
+                    pixGrid[r][c++] = new Pixel(rgbint[i]);
+                    if (c >= width) {
+                        c = 0;
+                        r++;
+                    }
+
+                }
                 break;
             case DataBuffer.TYPE_SHORT:
                 System.out.println("DataBuffer.SHORT");
@@ -185,8 +200,9 @@ public class TempPixelImage {
 
             default:
                 break;
-            }
+        }
 
+        System.out.println(width + "x" + height);
 
     }
 
