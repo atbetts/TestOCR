@@ -64,6 +64,10 @@ public class Pixel {
     }
 
 
+    public void setColor(Color c) {
+        setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
+    }
+
     public boolean setAlpha(int c) {
         if (c < 0 || c > 255) {
             return false;
@@ -72,11 +76,14 @@ public class Pixel {
         return true;
     }
 
-
     public int getARGB() {
 
         return (alpha << 24) + (r << 16) + (g << 8) + b;
 
+    }
+
+    public void setColor(Color c) {
+        setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 
     public int getAlpha() {

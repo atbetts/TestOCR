@@ -211,21 +211,33 @@ public class PixelImage {
         }
         System.out.println(width + "x" + height);
 
-
-        FilterPixels.ApplyKernel(new int[][]{
+        final Matrix gaussianBlur = new Matrix(new int[][]{
                 {1, 4, 7, 4, 1}
                 , {4, 16, 26, 16, 4}
                 , {7, 26, 41, 26, 7}
                 , {4, 16, 26, 16, 4}
                 , {1, 4, 7, 4, 1}
 
-        }, pixGrid);
+        }).multiply(.5);
 
-        FilterPixels.ApplyKernel(new int[][]{
-                {-1, 0, 1}
-                , {-2, 1, 2}
-                , {-1, 0, 1}
-        }, pixGrid);
+
+        final Matrix sharpen = new Matrix(new double[][]{
+                {1, 1, 1},
+                {1, -10, 1},
+                {1, 1, 1}
+        });
+
+        greyScale();
+        for (int i = 0; i < 2; i++) {
+            FilterPixels.ApplyKernel(gaussianBlur.getIntMatrix(), pixGrid);
+        }
+        for (int i = 0; i < 1; i++) {
+            FilterPixels.ApplyKernel(sharpen.getIntMatrix(), pixGrid);
+        }
+
+
+
+
 
 
 
@@ -268,7 +280,11 @@ public class PixelImage {
             for (int j = 0; j < cols; j++) {
 
                 pixGrid[i][j] = pixGrid[i][j].greyScale();
-
+                if (pixGrid[i][j].getBlue() < 100) {
+                    pixGrid[i][j].setColor(Color.black);
+                } else {
+                    pixGrid[i][j].setColor(Color.white);
+                }
             }
         }
     }
