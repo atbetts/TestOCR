@@ -1,5 +1,3 @@
-package tempReformat;
-
 import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.Tesseract;
 

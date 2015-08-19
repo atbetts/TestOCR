@@ -1,5 +1,3 @@
-package tempReformat;
-
 import java.awt.*;
 
 /**
