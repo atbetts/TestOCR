@@ -16,8 +16,8 @@ import java.util.Map;
 public class ImageTesting {
 
     static PixelImage temp;
-    public static void main(String...args) throws Exception{
 
+    public static void test() throws Exception {
         BufferedImage img = ImageIO.read(new File("bear.jpg"));
         File imgDir = new File("images");
         imgDir.mkdir();
@@ -31,7 +31,7 @@ public class ImageTesting {
         Tesseract t = new Tesseract();
         boolean breaker = false;
         Map<int[], Double> trial = new HashMap<int[], Double>();
-        for (int i = 60; i <= 150; i++) {
+        for (int i = 93; i <= 93; i++) {
             for (int j = 0; j < 5; j++) {
                 for (int k = 0; k < 5; k++) {
 
@@ -82,6 +82,11 @@ public class ImageTesting {
             test.repaint();
 
         }
+    }
+
+    public static void main(String...args) throws Exception{
+
+        test();
 
 
     }
