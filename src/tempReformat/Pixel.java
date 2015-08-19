@@ -82,9 +82,6 @@ public class Pixel {
 
     }
 
-    public void setColor(Color c) {
-        setColor(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
-    }
 
     public int getAlpha() {
         return alpha;
