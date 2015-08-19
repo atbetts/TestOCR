@@ -42,7 +42,7 @@ public class FilterPixels {
         if (kernelWeight == 0) {
             kernelWeight = 1;
         }
-        System.out.println("kernelWeight = " + kernelWeight);
+
 
         //Consider Temp storing of only kernel height pixels
         //Truncates border for now

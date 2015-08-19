@@ -35,6 +35,7 @@ public class PixelImage {
                     {-2, 0, 2},
                     {-1, 0, 1}}
     );
+    private Pixel[][] originalImage;
 
 
     public PixelImage(int height, int width) {
@@ -54,18 +55,13 @@ public class PixelImage {
     }
 
 
+
     public PixelImage(BufferedImage bufferedImage) {
         myImage = bufferedImage;
         width = myImage.getWidth();
         height = myImage.getHeight();
         pixGrid = new Pixel[height][width];
         setMyPixels();
-
-    }
-
-    public void filterPixels() {
-
-
 
     }
 
@@ -102,7 +98,6 @@ public class PixelImage {
         }
         pixGrid[x][y] = new Pixel(val, Pixel.ARGB_PIXEL);
     }
-
 
     public void setPixel(int x, int y, Color color) {
 
@@ -211,38 +206,27 @@ public class PixelImage {
         }
         System.out.println(width + "x" + height);
 
-        final Matrix gaussianBlur = new Matrix(new int[][]{
-                {1, 4, 7, 4, 1}
-                , {4, 16, 26, 16, 4}
-                , {7, 26, 41, 26, 7}
-                , {4, 16, 26, 16, 4}
-                , {1, 4, 7, 4, 1}
 
-        }).multiply(.5);
+        originalImage = new Pixel[height][width];
 
-
-        final Matrix sharpen = new Matrix(new double[][]{
-                {1, 1, 1},
-                {1, -10, 1},
-                {1, 1, 1}
-        });
-
-        greyScale();
-        for (int i = 0; i < 2; i++) {
-            FilterPixels.ApplyKernel(gaussianBlur.getIntMatrix(), pixGrid);
+        for (int i = 0; i < height; i++) {
+            System.arraycopy(pixGrid[i], 0, originalImage[i], 0, pixGrid[0].length);
         }
-        for (int i = 0; i < 1; i++) {
-            FilterPixels.ApplyKernel(sharpen.getIntMatrix(), pixGrid);
-        }
-
-
-
-
-
-
 
         myImage = buildPixels(pixGrid);
+    }
 
+    public void resetPixels() {
+        pixGrid = new Pixel[height][width];
+
+        for (int i = 0; i < height; i++) {
+            System.arraycopy(originalImage[i], 0, pixGrid[i], 0, originalImage[0].length);
+        }
+
+    }
+
+    public void buildImage() {
+        myImage = buildPixels(pixGrid);
     }
 
     public void draw(Graphics g, int x, int y) {
@@ -251,7 +235,6 @@ public class PixelImage {
         }
         g.drawImage(myImage, x, y, null);
     }
-
 
     public void invert() {
         for (int i = 0; i < pixGrid.length; i++) {
@@ -271,8 +254,40 @@ public class PixelImage {
 
     }
 
+    public void testValues(int binary, int blur, int sharp) {
+        resetPixels();
 
-    public void greyScale() {
+        final Matrix gaussianBlur = new Matrix(new int[][]{
+                {1, 4, 7, 4, 1}
+                , {4, 16, 26, 16, 4}
+                , {7, 26, 41, 26, 7}
+                , {4, 16, 26, 16, 4}
+                , {1, 4, 7, 4, 1}
+
+        }).multiply(.5);
+
+
+        final Matrix sharpen = new Matrix(new double[][]{
+                {1, 1, 1},
+                {1, -10, 1},
+                {1, 1, 1}
+        });
+
+        greyScale(binary);
+        for (int i = 0; i < blur; i++) {
+            FilterPixels.ApplyKernel(gaussianBlur.getIntMatrix(), pixGrid);
+        }
+        for (int i = 0; i < sharp; i++) {
+            FilterPixels.ApplyKernel(sharpen.getIntMatrix(), pixGrid);
+        }
+
+        myImage = buildPixels(pixGrid);
+
+
+    }
+
+
+    public void greyScale(int binary) {
         final int rows = pixGrid.length;
         final int cols = pixGrid[0].length;
 
@@ -280,7 +295,7 @@ public class PixelImage {
             for (int j = 0; j < cols; j++) {
 
                 pixGrid[i][j] = pixGrid[i][j].greyScale();
-                if (pixGrid[i][j].getBlue() < 100) {
+                if (pixGrid[i][j].getBlue() < binary) {
                     pixGrid[i][j].setColor(Color.black);
                 } else {
                     pixGrid[i][j].setColor(Color.white);

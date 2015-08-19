@@ -7,28 +7,82 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by abetts on 8/10/15.
  */
 public class ImageTesting {
-    static PixelImage pixelImage;
+
     static PixelImage temp;
     public static void main(String...args) throws Exception{
 
         BufferedImage img = ImageIO.read(new File("bear.jpg"));
-
+        File imgDir = new File("images");
+        imgDir.mkdir();
+        String imgPath = "images/";
         temp = new PixelImage(img);
         JFrame test = new JFrame("Image Window");
+        test.add(new ImgView());
+        test.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
+        test.setSize(img.getWidth(), img.getHeight());
+        test.setVisible(true);
+        Tesseract t = new Tesseract();
+        boolean breaker = false;
+        Map<int[], Double> trial = new HashMap<int[], Double>();
+        for (int i = 60; i <= 150; i++) {
+            for (int j = 0; j < 5; j++) {
+                for (int k = 0; k < 5; k++) {
+
+                    System.out.println("binary:" + i + "\tblur:" + j + "\tsharp:" + k);
+
+                    long time = System.nanoTime();
+                    temp.testValues(i, j, k);
+                    final String s = t.doOCR(temp.getMyImage());
+                    final double timer = (float) (System.nanoTime() - time) / 1e9;
+                    System.out.println(String.format("%.3f", timer));
+                    if (s.contains("UPS") && s.contains("El Camino")) {
+                        trial.put(new int[]{i, j, k}, (System.nanoTime() - time) / 1e9);
+                        ImageIO.write(temp.getMyImage(), "png", new File(imgPath + s.trim() + "-" + i + "-" + j + "-" + k + "-" + String.format("%.3f", timer) + ".png"));
+                        System.out.println(s);
+                    }
+                    if (!test.isValid()) {
+                        breaker = true;
+                        break;
+                    }
+                    test.revalidate();
+                    test.repaint();
+                }
+                if (breaker) break;
+            }
+            if (breaker) break;
+        }
+        trial.entrySet().parallelStream().map(e -> "binary:" + e.getKey()[0] + "\tblur:" + e.getKey()[1] + "\tsharp:" + e.getKey()[2] +
+                        "\ttime:" + e.getValue()
+        ).forEach(System.out::println);
+
+        test = new JFrame("Image Window");
         test.add(new ImgView());
         test.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         test.setSize(img.getWidth(), img.getHeight());
         test.setVisible(true);
-        Tesseract t = new Tesseract();
-        long time = System.nanoTime();
-        final String s = t.doOCR(temp.getMyImage());
-        System.out.println("Text = " + s);
-        System.out.println(String.format("%.3f", (float) (System.nanoTime() - time) / 1e9));
+
+        for (Map.Entry<int[], Double> e : trial.entrySet()) {
+
+            temp.resetPixels();
+            temp.buildImage();
+            temp.testValues(e.getKey()[0], e.getKey()[1], e.getKey()[2]);
+
+            int i = JOptionPane.showConfirmDialog(null, t.doOCR(temp.getMyImage()));
+            if (i == JOptionPane.CANCEL_OPTION) {
+                break;
+            }
+            test.revalidate();
+            test.repaint();
+
+        }
+
 
     }
 
