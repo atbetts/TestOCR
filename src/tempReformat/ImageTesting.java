@@ -1,5 +1,6 @@
 package tempReformat;
 
+import net.sourceforge.tess4j.ITessAPI;
 import net.sourceforge.tess4j.Tesseract;
 
 import javax.imageio.ImageIO;
@@ -29,6 +30,7 @@ public class ImageTesting {
         test.setSize(img.getWidth(), img.getHeight());
         test.setVisible(true);
         Tesseract t = new Tesseract();
+        t.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
         boolean breaker = false;
         Map<int[], Double> trial = new HashMap<int[], Double>();
         for (int i = 93; i <= 93; i++) {
