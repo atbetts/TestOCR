@@ -22,7 +22,7 @@ public class ImageTesting {
     static PixelImage temp;
 
     public static void test() throws Exception {
-        BufferedImage img = ImageIO.read(new File("league.png"));
+        BufferedImage img = ImageIO.read(new File("hardmode.jpg"));
         File imgDir = new File("images");
         imgDir.mkdir();
         String imgPath = "images/";
@@ -46,9 +46,12 @@ public class ImageTesting {
         t.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_TESSERACT_ONLY);
         boolean breaker = false;
         Map<int[], Double> trial = new HashMap<int[], Double>();
-        for (int i = 93; i <= 93; i++) {
-            for (int j = 0; j < 5; j++) {
-                for (int k = 0; k < 5; k++) {
+        for (int i = 130; i <= 150; i++) {
+//            for (int j = 0; j < 5; j++) {
+//                for (int k = 0; k < 5; k++) {
+
+            int j = 0;
+            int k = 0;
 
                     System.out.println("binary:" + i + "\tblur:" + j + "\tsharp:" + k);
 
@@ -61,7 +64,7 @@ public class ImageTesting {
                         trial.put(new int[]{i, j, k}, (System.nanoTime() - time) / 1e9);
                         ImageIO.write(temp.getMyImage(), "png", new File(imgPath + s.trim() + "-" + i + "-" + j + "-" + k + "-" + String.format("%.3f", timer) + ".png"));
                     }
-                    System.out.println(s);
+            System.out.println(s.replaceAll("[^A-Za-z0-9. \n]", ""));
 //                    Arrays.stream(s.split(" ")).forEach(str -> {
 //                        if (dictionary.contains(str.replace("[^A-Za-z]", "").toLowerCase())) {
 //                            System.out.println(str);
@@ -74,10 +77,10 @@ public class ImageTesting {
                     }
                     test.revalidate();
                     test.repaint();
-                }
-                if (breaker) break;
-            }
-            if (breaker) break;
+//                }
+//                if (breaker) break;
+//            }
+//            if (breaker) break;
         }
         trial.entrySet().parallelStream().map(e -> "binary:" + e.getKey()[0] + "\tblur:" + e.getKey()[1] + "\tsharp:" + e.getKey()[2] +
                         "\ttime:" + e.getValue()
