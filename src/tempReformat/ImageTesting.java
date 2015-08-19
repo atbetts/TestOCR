@@ -7,7 +7,10 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,18 +22,28 @@ public class ImageTesting {
     static PixelImage temp;
 
     public static void test() throws Exception {
-        BufferedImage img = ImageIO.read(new File("bear.jpg"));
+        BufferedImage img = ImageIO.read(new File("league.png"));
         File imgDir = new File("images");
         imgDir.mkdir();
         String imgPath = "images/";
         temp = new PixelImage(img);
+
+        ArrayList<String> dictionary = new ArrayList<>();
+        BufferedReader bR = new BufferedReader(new FileReader(new File("words.english")));
+        String temper;
+        while ((temper = bR.readLine()) != null) {
+            dictionary.add(temper);
+        }
+
+
+
         JFrame test = new JFrame("Image Window");
         test.add(new ImgView());
         test.setDefaultCloseOperation(WindowConstants.DISPOSE_ON_CLOSE);
         test.setSize(img.getWidth(), img.getHeight());
         test.setVisible(true);
         Tesseract t = new Tesseract();
-        t.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_TESSERACT_CUBE_COMBINED);
+        t.setOcrEngineMode(ITessAPI.TessOcrEngineMode.OEM_TESSERACT_ONLY);
         boolean breaker = false;
         Map<int[], Double> trial = new HashMap<int[], Double>();
         for (int i = 93; i <= 93; i++) {
@@ -47,8 +60,14 @@ public class ImageTesting {
                     if (s.contains("UPS") && s.contains("El Camino")) {
                         trial.put(new int[]{i, j, k}, (System.nanoTime() - time) / 1e9);
                         ImageIO.write(temp.getMyImage(), "png", new File(imgPath + s.trim() + "-" + i + "-" + j + "-" + k + "-" + String.format("%.3f", timer) + ".png"));
-                        System.out.println(s);
                     }
+                    System.out.println(s);
+//                    Arrays.stream(s.split(" ")).forEach(str -> {
+//                        if (dictionary.contains(str.replace("[^A-Za-z]", "").toLowerCase())) {
+//                            System.out.println(str);
+//                        }
+//                    });
+
                     if (!test.isValid()) {
                         breaker = true;
                         break;
