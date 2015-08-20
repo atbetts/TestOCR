@@ -20,7 +20,7 @@ public class ImageTesting {
     static PixelImage temp;
 
     public static void test() throws Exception {
-        BufferedImage img = ImageIO.read(new File("hardmode.jpg"));
+        BufferedImage img = ImageIO.read(new File("bear.jpg"));
         File imgDir = new File("images");
         imgDir.mkdir();
         String imgPath = "images/";

@@ -1,7 +1,5 @@
 import java.awt.*;
-import java.awt.image.BufferedImage;
-import java.awt.image.DataBuffer;
-import java.awt.image.WritableRaster;
+import java.awt.image.*;
 
 /**
  * Created by abetts on 8/11/15.
@@ -47,7 +45,7 @@ public class PixelImage {
 
     public PixelImage(Pixel[][] pixels) {
         pixGrid = pixels;
-        myImage = buildPixels(pixGrid);
+        buildPixels(pixGrid);
         width = pixGrid[0].length;
         height = pixGrid.length;
     }
@@ -56,8 +54,8 @@ public class PixelImage {
 
     public PixelImage(BufferedImage bufferedImage) {
         myImage = bufferedImage;
-        width = myImage.getWidth();
-        height = myImage.getHeight();
+        width = bufferedImage.getWidth();
+        height = bufferedImage.getHeight();
         pixGrid = new Pixel[height][width];
         setMyPixels();
 
@@ -67,24 +65,67 @@ public class PixelImage {
         return myImage;
     }
 
-    private BufferedImage buildPixels(Pixel[][] pixels) {
+    private void buildPixels(Pixel[][] pixels) {
+        int row, col;
+        row = col = 0;
 
-        BufferedImage tempImg = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
-        WritableRaster raster = (WritableRaster) tempImg.getData();
+        Raster myRaster = myImage.getRaster();
+        final int dataType = myRaster.getTransferType();
+        final int numDataElements = myRaster.getNumDataElements();
+        System.out.println("numDataElements = " + numDataElements);
+        System.out.println("Build Pixels");
+        switch (dataType) {
+            case DataBuffer.TYPE_BYTE:
+                System.out.println("DataBuffer.TYPE_BYTE");
 
-        int[] to1D = new int[width * height];
 
-        int c = 0;
+                if (numDataElements == 3) {
+                    byte[] data = ((DataBufferByte) (myRaster.getDataBuffer())).getData();
 
-        for (int i = 0; i < height; i++) {
-            for (int j = 0; j < width; j++) {
-                to1D[c++] = pixels[i][j].getARGB();
-            }
+                    for (int i = 0; i < data.length; i += numDataElements) {
+                        Pixel temp = pixGrid[row][col++];
+                        if (col >= pixGrid[0].length) {
+                            col = 0;
+                            row++;
+                        }
+                        data[i] = (byte) temp.getRed();
+                        data[i + 1] = (byte) temp.getGreen();
+                        data[i + 2] = (byte) temp.getBlue();
+
+
+                    }
+                } else if (numDataElements == 4) {
+
+                }
+
+                break;
+            case DataBuffer.TYPE_DOUBLE:
+                System.out.println("DataBuffer.DOUBLE");
+                double[] data = ((DataBufferDouble) (myRaster.getDataBuffer())).getData();
+
+                System.out.println();
+                break;
+            case DataBuffer.TYPE_FLOAT:
+                System.out.println("DataBuffer.FLOAT");
+                break;
+            case DataBuffer.TYPE_INT:
+                System.out.println("DataBuffer.INT");
+                break;
+            case DataBuffer.TYPE_SHORT:
+                System.out.println("DataBuffer.SHORT");
+                break;
+            case DataBuffer.TYPE_UNDEFINED:
+                System.out.println("DataBuffer.UNDEFINED");
+                break;
+            case DataBuffer.TYPE_USHORT:
+                System.out.println("DataBuffer.USHORT");
+                break;
+
+            default:
+                break;
         }
-        raster.setDataElements(0, 0, width, height, to1D);
-        return new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB) {{
-            setData(raster);
-        }};
+
+
     }
 
     public void setPixel(int x, int y, int val) {
@@ -181,7 +222,9 @@ public class PixelImage {
                 int r, c;
                 r = c = 0;
                 for (int i = 0; i < rgbint.length; i++) {
-                    pixGrid[r][c++] = new Pixel(rgbint[i]);
+                    final Pixel pixel = new Pixel(rgbint[i], Pixel.ARGB_PIXEL);
+
+                    pixGrid[r][c++] = pixel;
                     if (c >= width) {
                         c = 0;
                         r++;
@@ -210,8 +253,7 @@ public class PixelImage {
         for (int i = 0; i < height; i++) {
             System.arraycopy(pixGrid[i], 0, originalImage[i], 0, pixGrid[0].length);
         }
-
-        myImage = buildPixels(pixGrid);
+        System.out.println("set pixels");
     }
 
     public void resetPixels() {
@@ -221,10 +263,11 @@ public class PixelImage {
             System.arraycopy(originalImage[i], 0, pixGrid[i], 0, originalImage[0].length);
         }
 
+
     }
 
     public void buildImage() {
-        myImage = buildPixels(pixGrid);
+        buildPixels(pixGrid);
     }
 
     public void draw(Graphics g, int x, int y) {
@@ -271,7 +314,7 @@ public class PixelImage {
                 {1, 1, 1}
         });
 
-        greyScale(binary);
+        binary(binary);
         for (int i = 0; i < blur; i++) {
             FilterPixels.ApplyKernel(gaussianBlur.getIntMatrix(), pixGrid);
         }
@@ -279,13 +322,13 @@ public class PixelImage {
             FilterPixels.ApplyKernel(sharpen.getIntMatrix(), pixGrid);
         }
 
-        myImage = buildPixels(pixGrid);
+        buildPixels(pixGrid);
 
 
     }
 
 
-    public void greyScale(int binary) {
+    public void binary(int binary) {
         final int rows = pixGrid.length;
         final int cols = pixGrid[0].length;
 
@@ -302,6 +345,18 @@ public class PixelImage {
         }
     }
 
+
+    public void greyScale() {
+        final int rows = pixGrid.length;
+        final int cols = pixGrid[0].length;
+
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+
+                pixGrid[i][j] = pixGrid[i][j].greyScale();
+            }
+        }
+    }
 }
 
 
