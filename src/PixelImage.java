@@ -95,7 +95,20 @@ public class PixelImage {
 
                     }
                 } else if (numDataElements == 4) {
+                    byte[] data = ((DataBufferByte) (myRaster.getDataBuffer())).getData();
 
+                    for (int i = 0; i < data.length; i += numDataElements) {
+                        Pixel temp = pixGrid[row][col++];
+                        if (col >= pixGrid[0].length) {
+                            col = 0;
+                            row++;
+                        }
+                        data[i] = (byte) temp.getRed();
+                        data[i + 1] = (byte) temp.getGreen();
+                        data[i + 2] = (byte) temp.getBlue();
+                        data[i + 3] = (byte) temp.getAlpha();
+
+                    }
                 }
 
                 break;
