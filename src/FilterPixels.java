@@ -109,4 +109,8 @@ public class FilterPixels {
 
     }
 
+
+    public static void shiftColors(Pixel[][] image) {
+
+    }
 }

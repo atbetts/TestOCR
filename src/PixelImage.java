@@ -45,7 +45,7 @@ public class PixelImage {
 
     public PixelImage(Pixel[][] pixels) {
         pixGrid = pixels;
-        buildPixels(pixGrid);
+        buildPixels();
         width = pixGrid[0].length;
         height = pixGrid.length;
     }
@@ -65,18 +65,17 @@ public class PixelImage {
         return myImage;
     }
 
-    private void buildPixels(Pixel[][] pixels) {
+    private void buildPixels() {
         int row, col;
         row = col = 0;
 
         Raster myRaster = myImage.getRaster();
         final int dataType = myRaster.getTransferType();
         final int numDataElements = myRaster.getNumDataElements();
-        System.out.println("numDataElements = " + numDataElements);
-        System.out.println("Build Pixels");
+
         switch (dataType) {
             case DataBuffer.TYPE_BYTE:
-                System.out.println("DataBuffer.TYPE_BYTE");
+
 
 
                 if (numDataElements == 3) {
@@ -280,7 +279,7 @@ public class PixelImage {
     }
 
     public void buildImage() {
-        buildPixels(pixGrid);
+        buildPixels();
     }
 
     public void draw(Graphics g, int x, int y) {
@@ -335,9 +334,14 @@ public class PixelImage {
             FilterPixels.ApplyKernel(sharpen.getIntMatrix(), pixGrid);
         }
 
-        buildPixels(pixGrid);
+        buildPixels();
 
 
+    }
+
+    public void applyKernel(int[][] k) {
+        FilterPixels.ApplyKernel(k, pixGrid);
+        buildPixels();
     }
 
 
