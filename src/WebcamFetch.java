@@ -2,6 +2,9 @@ import com.github.sarxos.webcam.Webcam;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.util.Arrays;
+import java.util.Comparator;
 
 /**
  * Created by abetts on 8/20/15.
@@ -14,12 +17,20 @@ public class WebcamFetch {
         PixelImage pixelImage = new PixelImage();
 
         Webcam w = Webcam.getDefault();
+        w.setViewSize(Arrays.stream(w.getViewSizes()).min(new Comparator<Dimension>() {
+            @Override
+            public int compare(Dimension o1, Dimension o2) {
+                return (int) (o1.getHeight() * o1.getWidth()) - (int) (o2.getHeight() * o2.getWidth());
+            }
+        }).get());
         w.open();
         JPanel p = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(pixelImage.getMyImage(), 0, 0, null);
+                BufferedImage b = w.getImage();
+                BufferedImageFilter.greyScale(b);
+                g.drawImage(b, 0, 0, null);
             }
         };
         p.setPreferredSize(w.getViewSize());
@@ -38,12 +49,9 @@ public class WebcamFetch {
             while (true) {
                 try {
                     time = System.nanoTime();
-                    pixelImage.setImage(w.getImage());
-                    FilterPixels.ApplyKernel(PixelImage.gaussianBlur.getIntMatrix(), pixelImage.getPixels());
-                    pixelImage.buildImage();
+
                     while (System.nanoTime() - time < 20 * 1e6) ;
                     p.repaint();
-                    p.revalidate();
 
                 } catch (Exception e) {
                     e.printStackTrace();
