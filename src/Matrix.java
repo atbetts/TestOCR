@@ -1,4 +1,5 @@
 import java.awt.*;
+import java.awt.image.Kernel;
 
 /**
  * Created by abetts on 8/10/15.
@@ -52,7 +53,6 @@ public class Matrix {
         }
     }
 
-
     public Matrix(int[][] matrix) {
         final int row = matrix.length;
         final int col = matrix[0].length;
@@ -66,8 +66,21 @@ public class Matrix {
         cols = col;
     }
 
+
     public Matrix(Dimension dimension) {
         this((int) dimension.getWidth(), (int) dimension.getHeight());
+    }
+
+    public Kernel getKernel() {
+        int k = 0;
+        float[] kernel = new float[rows * cols];
+        for (int i = 0; i < rows; i++) {
+            for (int j = 0; j < cols; j++) {
+                kernel[k++] = (float) matrix[i][j];
+            }
+        }
+
+        return new Kernel(cols, rows, kernel);
     }
 
     public Dimension getBounds(){

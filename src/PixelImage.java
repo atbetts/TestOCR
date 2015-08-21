@@ -7,18 +7,15 @@ import java.awt.image.*;
 public class PixelImage {
 
 
-    private int width, height;
-    private BufferedImage myImage;
-    private Pixel[][] pixGrid;
-
-
-
-    private Matrix gaussianBlur = new Matrix(
+    public static Matrix gaussianBlur = new Matrix(
             new double[][]{
                     {1, 1, 1},
                     {1, 1, 1},
                     {1, 1, 1}}
     );
+    private int width, height;
+    private BufferedImage myImage;
+    private Pixel[][] pixGrid;
     private Matrix sobelY = new Matrix(
             new double[][]{
                     {-1, -2, -1},
@@ -42,6 +39,9 @@ public class PixelImage {
         setMyPixels();
     }
 
+    public PixelImage() {
+
+    }
 
     public PixelImage(Pixel[][] pixels) {
         pixGrid = pixels;
@@ -50,8 +50,6 @@ public class PixelImage {
         height = pixGrid.length;
     }
 
-
-
     public PixelImage(BufferedImage bufferedImage) {
         myImage = bufferedImage;
         width = bufferedImage.getWidth();
@@ -59,6 +57,18 @@ public class PixelImage {
         pixGrid = new Pixel[height][width];
         setMyPixels();
 
+    }
+
+    public void setImage(BufferedImage bufferedImage) {
+        myImage = bufferedImage;
+        width = bufferedImage.getWidth();
+        height = bufferedImage.getHeight();
+        pixGrid = new Pixel[height][width];
+        setMyPixels();
+    }
+
+    public Pixel[][] getPixels() {
+        return pixGrid;
     }
 
     public BufferedImage getMyImage() {
@@ -102,10 +112,10 @@ public class PixelImage {
                             col = 0;
                             row++;
                         }
-                        data[i] = (byte) temp.getRed();
-                        data[i + 1] = (byte) temp.getGreen();
-                        data[i + 2] = (byte) temp.getBlue();
-                        data[i + 3] = (byte) temp.getAlpha();
+                        data[i] = (byte) temp.getAlpha();
+                        data[i + 1] = (byte) temp.getBlue();
+                        data[i + 2] = (byte) temp.getGreen();
+                        data[i + 3] = (byte) temp.getRed();
 
                     }
                 }

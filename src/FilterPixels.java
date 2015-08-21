@@ -111,6 +111,11 @@ public class FilterPixels {
 
 
     public static void shiftColors(Pixel[][] image) {
-
+        for (int i = 0; i < image.length; i++) {
+            for (int j = 0; j < image[0].length; j++) {
+                final Pixel pixel = image[i][j];
+                image[i][j] = new Pixel(pixel.getGreen(), pixel.getBlue(), pixel.getRed(), pixel.getAlpha());
+            }
+        }
     }
 }

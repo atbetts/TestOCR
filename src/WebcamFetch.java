@@ -1,7 +1,7 @@
-import javax.imageio.ImageIO;
+import com.github.sarxos.webcam.Webcam;
+
 import javax.swing.*;
 import java.awt.*;
-import java.io.File;
 
 /**
  * Created by abetts on 8/20/15.
@@ -11,64 +11,40 @@ public class WebcamFetch {
 
     public static void main(String[] args) throws Exception {
 
+        PixelImage pixelImage = new PixelImage();
 
-        final PixelImage p = new PixelImage(ImageIO.read(new File("bear.jpg")));
-
-
-        final JPanel comp1 = new JPanel() {
-            {
-
-            }
-
-        };
-
-        final JPanel comp = new JPanel() {
-            {
-                setPreferredSize(new Dimension(p.getMyImage().getWidth(), p.getMyImage().getHeight()));
-            }
-
+        Webcam w = Webcam.getDefault();
+        w.open();
+        JPanel p = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
-                g.drawImage(p.getMyImage(), 0, 0, null);
+                g.drawImage(pixelImage.getMyImage(), 0, 0, null);
             }
         };
-        comp1.add(comp);
-        final JButton filter = new JButton() {{
-            setText("Filter");
-            addActionListener((act) -> {
-                long time = System.nanoTime();
-                p.applyKernel(new int[][]{{-1, 0, -1}, {0, 5, 0}, {-1, 0, -1}});
-                System.out.println((System.nanoTime() - time) / 1e6 + " MilliSeconds");
-                comp.repaint();
-            });
-        }};
-        comp1.add(filter);
-        final JButton filter1 = new JButton() {{
-            setText("Filter1");
-            addActionListener((act) -> {
-                p.resetPixels();
-                p.buildImage();
-                comp.repaint();
-            });
-        }};
-        comp1.add(filter1);
+        p.setPreferredSize(w.getViewSize());
 
-
-        JFrame f = new JFrame() {{
-
-            add(comp1);
+        new JFrame() {{
+            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+            add(p);
             pack();
             setVisible(true);
-            setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         }};
+
+
 
         new Thread(() -> {
             long time = System.nanoTime();
             while (true) {
                 try {
                     time = System.nanoTime();
-                    while ((System.nanoTime() - time) / 1e6 < 10) ;
+                    pixelImage.setImage(w.getImage());
+                    FilterPixels.ApplyKernel(PixelImage.gaussianBlur.getIntMatrix(), pixelImage.getPixels());
+                    pixelImage.buildImage();
+                    while (System.nanoTime() - time < 20 * 1e6) ;
+                    p.repaint();
+                    p.revalidate();
+
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
