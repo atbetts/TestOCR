@@ -4,7 +4,6 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.Arrays;
-import java.util.Comparator;
 
 /**
  * Created by abetts on 8/20/15.
@@ -17,27 +16,28 @@ public class WebcamFetch {
         PixelImage pixelImage = new PixelImage();
 
         Webcam w = Webcam.getDefault();
-        w.setViewSize(Arrays.stream(w.getViewSizes()).min(new Comparator<Dimension>() {
-            @Override
-            public int compare(Dimension o1, Dimension o2) {
-                return (int) (o1.getHeight() * o1.getWidth()) - (int) (o2.getHeight() * o2.getWidth());
-            }
-        }).get());
+        Arrays.stream(w.getViewSizes()).forEach(System.out::println);
+        w.setViewSize(new Dimension(320, 240));
         w.open();
+        JSlider jS = new JSlider(-255, 0);
+        JPanel p1 = new JPanel() {{
+            add(jS);
+        }};
         JPanel p = new JPanel() {
             @Override
             protected void paintComponent(Graphics g) {
                 super.paintComponent(g);
                 BufferedImage b = w.getImage();
-                BufferedImageFilter.greyScale(b);
+                BufferedImageFilter.binary(b, jS.getValue() * -1);
                 g.drawImage(b, 0, 0, null);
             }
         };
+        p1.add(p);
         p.setPreferredSize(w.getViewSize());
 
         new JFrame() {{
             setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-            add(p);
+            add(p1);
             pack();
             setVisible(true);
         }};
