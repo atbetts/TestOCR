@@ -7,33 +7,19 @@
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/src/main/scala" isTestSource="false" />
       <excludeFolder url="file://$MODULE_DIR$/target" />
     </content>
     <orderEntry type="jdk" jdkName="1.8" jdkType="JavaSDK" />
     <orderEntry type="sourceFolder" forTests="false" />
+    <orderEntry type="library" name="opencv-300" level="project" />
+    <orderEntry type="library" name="tess4j" level="project" />
+    <orderEntry type="library" name="Maven: com.google.guava:guava:19.0-rc1" level="project" />
     <orderEntry type="library" name="Maven: xuggle:xuggle-xuggler:5.2" level="project" />
     <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.6.4" level="project" />
     <orderEntry type="library" name="Maven: commons-cli:commons-cli:1.1" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: ch.qos.logback:logback-core:1.0.0" level="project" />
     <orderEntry type="library" scope="RUNTIME" name="Maven: ch.qos.logback:logback-classic:1.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco:javacv:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco:javacpp:1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:opencv:3.0.0-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:opencv:macosx-x86_64:3.0.0-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:2.7.1-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:ffmpeg:macosx-x86_64:2.7.1-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:flycapture:2.7.3.19-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:flycapture:macosx-x86_64:2.7.3.19-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:libdc1394:2.2.3-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:libdc1394:macosx-x86_64:2.2.3-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:libfreenect:0.5.2-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:libfreenect:macosx-x86_64:0.5.2-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:videoinput:0.200-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:videoinput:macosx-x86_64:0.200-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:artoolkitplus:2.3.1-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:artoolkitplus:macosx-x86_64:2.3.1-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:flandmark:1.07-1.0" level="project" />
-    <orderEntry type="library" name="Maven: org.bytedeco.javacpp-presets:flandmark:macosx-x86_64:1.07-1.0" level="project" />
     <orderEntry type="library" name="Maven: net.sourceforge.tess4j:tess4j:2.0.1" level="project" />
     <orderEntry type="library" name="Maven: com.github.sarxos:webcam-capture:0.3.10" level="project" />
     <orderEntry type="library" name="Maven: com.nativelibs4java:bridj:0.6.2" level="project" />

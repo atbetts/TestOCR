@@ -13,16 +13,17 @@
     <dependencies>
 
         <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>19.0-rc1</version>
+        </dependency>
+
+        <dependency>
             <groupId>xuggle</groupId>
             <artifactId>xuggle-xuggler</artifactId>
             <version>5.2</version>
         </dependency>
 
-        <dependency>
-            <groupId>org.bytedeco</groupId>
-            <artifactId>javacv</artifactId>
-            <version>1.0</version>
-        </dependency>
 
         <dependency>
             <groupId>net.sourceforge.tess4j</groupId>
@@ -35,6 +36,7 @@
             <artifactId>webcam-capture</artifactId>
             <version>0.3.10</version>
         </dependency>
+
 
     </dependencies>
 
