@@ -31,7 +31,7 @@ public class Encoder {
     public static void main(String[] args) throws Exception {
 
 
-            File file = new File("output.ts");
+        File file = new File("output.ts");
 
 
         BlockingQueue<BufferedImage> cache = new LinkedBlockingQueue<BufferedImage>();
@@ -267,7 +267,7 @@ public class Encoder {
                                 final File logFile = jc.getSelectedFile();
                                 new Thread(() -> {
                                     try (BufferedWriter logger = new BufferedWriter(new FileWriter(logFile, true))) {
-                                        logger.append();
+
                                     } catch (IOException io) {
 
                                     }
